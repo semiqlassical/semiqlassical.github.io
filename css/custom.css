@@ -1,0 +1,27 @@
+/* custom.css */
+
+/* Parallax Container */
+.parallax-container {
+    /* Background image */
+    background-image: url('./img/protein.png'); /* Adjust the path as needed */
+    
+    /* Set a fixed height; adjust as needed */
+    height: 500px;
+    
+    /* Create the parallax effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    /* Optional: Add overlay color with transparency */
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    /* background-blend-mode: multiply; */
+}
+
+/* Responsive Adjustment */
+@media (max-width: 768px) {
+    .parallax-container {
+        background-attachment: scroll; /* Disables fixed attachment on smaller screens */
+    }
+}
