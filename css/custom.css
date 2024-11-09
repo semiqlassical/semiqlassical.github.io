@@ -8,6 +8,10 @@
     color:beige
 }
 
+.navbar-contain-padding {
+    padding-bottom: 20px;
+}
+
 /* Parallax Container */
 .parallax-container {
     /* Background image */
