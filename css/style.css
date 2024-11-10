@@ -228,7 +228,7 @@ h6,
 .service-item {
     position: relative;
     padding: 45px 30px;
-    background: #2d2b34;
+    background: #1a353f;
     transition: .5s;
 }
 
@@ -241,7 +241,7 @@ h6,
     width: 90px;
     height: 90px;
     color: var(--primary);
-    background: rgba(33, 66, 177, .25); /* var(--light);*/
+    background: rgba(232, 9, 39, 0.25); /* var(--light);*/
     transition: .5s;
 }
 
