@@ -12,6 +12,10 @@
     padding-bottom: 20px !important;
 }
 
+.img-max-width {
+    max-width: 100% !important;
+}
+
 /* Parallax Container */
 .parallax-container {
     /* Background image */
