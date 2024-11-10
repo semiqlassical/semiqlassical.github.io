@@ -46,7 +46,7 @@
 
     <!-- Navbar Start -->
     <div class="container-fluid sticky-top">
-        <div class="container">
+        <div class="container navbar-contain-padding">
             <nav class="navbar navbar-expand-lg navbar-dark p-0">
                 <a href="index.html" class="navbar-brand">
                     <img src="img/logo.png" alt="Brand Logo" style="height: 80px;">
@@ -58,10 +58,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Services</a>
-                        <a href="project.html" class="nav-item nav-link">Projects</a>
+                        <!-- <a href="index.html" class="nav-item nav-link active">Home</a> -->
+                        <a href="directquantum-platform.html" class="nav-item nav-link">DirectQuantum Platform</a>
+                        <a href="intelligent-therapeutics.html" class="nav-item nav-link">Intelligent Therapeutics</a>
+                        <a href="careers.html" class="nav-item nav-link">Careers</a>
+                        <a href="about-us.html" class="nav-item nav-link">About Us</a>
+                        
                         <!--
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
@@ -86,18 +88,21 @@
 
 
     <!-- Hero Start -->
-    <div class="container-fluid pt-5 bg-primary hero-header mb-5">
+    <div class="container-fluid pt-5 bg-primary hero-header">
         <div class="container pt-5">
             <div class="row g-5 pt-5">
                 <div class="col-lg-6 align-self-center text-center text-lg-start mb-lg-5">
                     <div class="btn btn-sm border rounded-pill text-white px-3 mb-3 animated slideInRight">semiqlassical Inc.</div>
-                    <h1 class="display-4 text-white mb-4 animated slideInRight">Advancing in silico  small molecule therapeutics design with emerging compute paradigms  
-
+                    <h1 class="display-4 text-white mb-4 animated slideInRight">  
+                        Pioneering Intelligent Molecular Designs for Mechanism-Based Therapeutics.
                     </h1>
-                    <p class="text-white mb-4 animated slideInRight">Advancing in silico  small molecule therapeutics design with emerging compute paradigms.  
-                    </p>
-                    <a href="" class="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInRight">Read More</a>
-                    <a href="" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Contact Us</a>
+                    <!--<p class="text-white mb-4 animated slideInRight">Building Complex Theraputics. Rare  Diseses. 
+                    </p>-->
+                    <!--<a href="" class="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInRight">Read More</a>-->
+                    <!--<a href="" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Contact Us</a>-->
+                    <a href="mailto:info@semiqlassical.tech" class="btn btn-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">
+                        Contact Us
+                      </a>
                 </div>
                 <div class="parallax-container col-lg-6 align-self-end text-center text-lg-end">
                     <img class="parallax-img img-fluid" src="img/protein.png" alt="Protein Image">
@@ -132,121 +137,103 @@
     </div>
      Full Screen Search End -->
 
+    <!-- Service Start -->
+        <div class="container-fluid index-bg-match-dark py-5">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <!--
+                    <div class="col-lg-5 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="btn btn-sm border rounded-pill text-primary px-3 mb-3">Our Services</div>
+                        <h1 class="mb-4">hello Excellent AI Solutions for Your Business</h1>
+                        <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                            amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus
+                            clita duo justo et tempor eirmod magna dolore erat amet</p>
+                        <a class="btn btn-primary rounded-pill px-4" href="">Read More</a>
+                    </div>-->
+                    <div class=""> 
+                        <div class="btn btn-sm border rounded-pill text-white px-3 mb-3">Our Core Mission</div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="row g-4">
+                                    <div class="col-12 wow fadeIn" data-wow-delay="0.3s">
+                                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                                            <div class="service-icon btn-square">
+                                                <i class="fa fa-robot fa-2x"></i>
+                                            </div>
+                                            <h5 class="mb-3 text-logo-yellow">The Art and Science of Biomolecular Simulation</h5>
+                                            <p class="text-white">Our software platform, DirectQuantum, serves as a sandbox for exploring complex biomolecular processes, enabling us to investigate with cutting-edge scale and precision.  </p>
+                                           <!-- <a class="btn px-3 mt-auto mx-auto" href="">Read More</a>-->
+                                        </div>
+                                    </div>
+                                    <div class="col-12 wow fadeIn" data-wow-delay="0.5s">
+                                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                                            <div class="service-icon btn-square">
+                                                <i class="fa fa-power-off fa-2x"></i>
+                                            </div>
+                                            <h5 class="mb-3 text-logo-yellow">Preparing Quantum Chemistry for Quantum Advancements</h5>
+                                            <p class="text-white">To prepare for a future where utility-scale quantum computers become a reality, we are starting early. DirectQuantum is built from the ground up to leverage quantum hardware, from current noisy, near-term experimental devices to future utility-scale processors.</p>
+                                            <!--<a class="btn px-3 mt-auto mx-auto" href="">Read More</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row g-4">
+                                    <div class="col-12 wow fadeIn" data-wow-delay="0.3s">
+                                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                                            <div class="service-icon btn-square">
+                                                <i class="fa fa-graduation-cap fa-2x"></i>
+                                            </div>
+                                            <h5 class="mb-3 text-logo-yellow">Mechnism based in silico drug discovery</h5>
+                                            <p class="text-white">With DirectQuantum, our goal is to target complex molecular mechanisms to discover therapeutic solutions with a high probability of clinical success.</p>
+                                            <!--<a class="btn px-3 mt-auto mx-auto" href="">Read More</a>-->
+                                        </div>
+                                    </div>
+                                    <div class="col-12 wow fadeIn" data-wow-delay="0.5s">
+                                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                                            <div class="service-icon btn-square">
+                                                <i class="fa fa-brain fa-2x"></i>
+                                            </div>
+                                            <h5 class="mb-3 text-logo-yellow">Enabling tomorrow needs a workplace made for tomorrow</h5>
+                                            <p class="text-white">We believe that to stay ahead as an organization in frontier tech, the people who build our solutions are at the core of our constant drive to push the state of the art. At Semiqlassical, we’re creating a 21st-century workplace through a unique culture of decision-making, resource sharing, and inclusive hiring practices.   </p>
+                                            <!--<a class="btn px-3 mt-auto mx-auto" href="">Read More</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Service End -->
 
-    <!-- About Start -->
+    <!-- About Start
     <div class="container-fluid py-5 bg-dark">
         <div class="container">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-                    <!--
+                    
                     <div class="about-img">
                         <img class="img-fluid" src="img/about-img.jpg">
-                    </div>-->
+                    </div>
                 </div>
                 <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-                    <div class="btn btn-sm border rounded-pill text-white px-3 mb-3">About Us</div>
-                    <h1 class="mb-4">We Make Your Business Smarter with Artificial Intelligence</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                    <div class="btn btn-sm border rounded-pill text-white px-3 mb-3">Our Core Mission</div>
+                    <h1 class="mb-4 index-2sec-title">We Make Your Business Smarter with Artificial Intelligence</h1>
+                    <p class="mb-4 index-2sec-content">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
                         amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus
                         clita duo justo et tempor eirmod magna dolore erat amet</p>
-                    <p class="mb-4">Aliqu diam amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no
+                    <p class="mb-4 index-2sec-content">Aliqu diam amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no
                         labore lorem sit. Sanctus clita duo justo et tempor.</p>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <h6 class="mb-3"><i class="fa fa-check text-white me-2"></i>Award Winning</h6>
-                            <h6 class="mb-0"><i class="fa fa-check text-white me-2"></i>Professional Staff</h6>
-                        </div>
-                        <div class="col-sm-6">
-                            <h6 class="mb-3"><i class="fa fa-check text-white me-2"></i>24/7 Support</h6>
-                            <h6 class="mb-0"><i class="fa fa-check text-white me-2"></i>Fair Prices</h6>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mt-4">
-                        <a class="btn btn-primary rounded-pill px-4 me-3" href="">Read More</a>
-                        <a class="btn btn-outline-primary btn-square me-3" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-primary btn-square me-3" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-primary btn-square me-3" href=""><i class="fab fa-instagram"></i></a>
-                        <a class="btn btn-outline-primary btn-square" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- About End -->
+    About End -->
 
 
-    <!-- Service Start -->
-    <div class="container-fluid bg-light mt-5 py-5">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-5 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="btn btn-sm border rounded-pill text-primary px-3 mb-3">Our Services</div>
-                    <h1 class="mb-4">Our Excellent AI Solutions for Your Business</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
-                        amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus
-                        clita duo justo et tempor eirmod magna dolore erat amet</p>
-                    <a class="btn btn-primary rounded-pill px-4" href="">Read More</a>
-                </div>
-                <div class="col-lg-7">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="row g-4">
-                                <div class="col-12 wow fadeIn" data-wow-delay="0.1s">
-                                    <div class="service-item d-flex flex-column justify-content-center text-center rounded">
-                                        <div class="service-icon btn-square">
-                                            <i class="fa fa-robot fa-2x"></i>
-                                        </div>
-                                        <h5 class="mb-3">Robotic Automation</h5>
-                                        <p>Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet
-                                            diam sed stet lorem.</p>
-                                        <a class="btn px-3 mt-auto mx-auto" href="">Read More</a>
-                                    </div>
-                                </div>
-                                <div class="col-12 wow fadeIn" data-wow-delay="0.5s">
-                                    <div class="service-item d-flex flex-column justify-content-center text-center rounded">
-                                        <div class="service-icon btn-square">
-                                            <i class="fa fa-power-off fa-2x"></i>
-                                        </div>
-                                        <h5 class="mb-3">Machine learning</h5>
-                                        <p>Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet
-                                            diam sed stet lorem.</p>
-                                        <a class="btn px-3 mt-auto mx-auto" href="">Read More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 pt-md-4">
-                            <div class="row g-4">
-                                <div class="col-12 wow fadeIn" data-wow-delay="0.3s">
-                                    <div class="service-item d-flex flex-column justify-content-center text-center rounded">
-                                        <div class="service-icon btn-square">
-                                            <i class="fa fa-graduation-cap fa-2x"></i>
-                                        </div>
-                                        <h5 class="mb-3">Education & Science</h5>
-                                        <p>Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet
-                                            diam sed stet lorem.</p>
-                                        <a class="btn px-3 mt-auto mx-auto" href="">Read More</a>
-                                    </div>
-                                </div>
-                                <div class="col-12 wow fadeIn" data-wow-delay="0.7s">
-                                    <div class="service-item d-flex flex-column justify-content-center text-center rounded">
-                                        <div class="service-icon btn-square">
-                                            <i class="fa fa-brain fa-2x"></i>
-                                        </div>
-                                        <h5 class="mb-3">Predictive Analysis</h5>
-                                        <p>Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet
-                                            diam sed stet lorem.</p>
-                                        <a class="btn px-3 mt-auto mx-auto" href="">Read More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
+
 
 
     <!-- Feature Start 
@@ -735,7 +722,7 @@
 
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+    <!--<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>-->
 
 
     <!-- JavaScript Libraries -->

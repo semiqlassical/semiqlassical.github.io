@@ -1,5 +1,37 @@
 /* custom.css */
 
+.index-2sec-title {
+    color:whitesmoke
+}
+
+.index-2sec-content {
+    color:beige
+}
+
+.navbar-contain-padding {
+    padding-bottom: 20px !important;
+}
+
+.img-max-width {
+    max-width: 100% !important;
+}
+
+.text-logo-yellow {
+    color: #ffad00;
+}
+
+.index-bg-match-dark {
+    background-color:#494f73 !important
+}
+
+.text-intro-align-center{
+    text-align: center !important;
+}
+
+.margin-box-top{
+    margin-top: 0.25rem;
+}
+
 /* Parallax Container */
 .parallax-container {
     /* Background image */
