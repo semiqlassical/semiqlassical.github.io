@@ -28,6 +28,10 @@
     text-align: center !important;
 }
 
+.margin-box-top{
+    margin-top: 0.25rem;
+}
+
 /* Parallax Container */
 .parallax-container {
     /* Background image */
