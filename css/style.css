@@ -4,6 +4,7 @@
     --secondary: #15ACE1;
     --light: #F4F7FE;
     --dark: #14183E;
+    --bg-teal: #34a3c2;
 }
 
 
@@ -227,12 +228,12 @@ h6,
 .service-item {
     position: relative;
     padding: 45px 30px;
-    background: #FFFFFF;
+    background: #5a4b97;
     transition: .5s;
 }
 
 .service-item:hover {
-    background: var(--primary);
+    background: var(--bg-teal);
 }
 
 .service-item .service-icon {
@@ -303,7 +304,7 @@ h6,
 }
 
 @media (min-width: 992px) {
-    .newsletter .container {
+    .newsletter .container {  /*** remove .container ***/
         max-width: 100% !important;
     }
 
