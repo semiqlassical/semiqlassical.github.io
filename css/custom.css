@@ -24,6 +24,10 @@
     background-color:#494f73 !important
 }
 
+.text-intro-align-center{
+    text-align: center !important;
+}
+
 /* Parallax Container */
 .parallax-container {
     /* Background image */
