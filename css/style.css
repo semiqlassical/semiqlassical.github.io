@@ -228,7 +228,7 @@ h6,
 .service-item {
     position: relative;
     padding: 45px 30px;
-    background: #164b5e;
+    background: #103543;
     transition: .5s;
 }
 
@@ -241,12 +241,12 @@ h6,
     width: 90px;
     height: 90px;
     color: var(--primary);
-    background: rgba(232, 9, 39, 0.25); /* var(--light);*/
+    background: rgba(232, 9, 39, 0.025); /* var(--light);*/
     transition: .5s;
 }
 
 .service-item:hover .service-icon {
-    background: #ffffff;
+    background: rgba(232, 9, 39, 0.025);
 }
 
 .service-item h5,
