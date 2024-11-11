@@ -21,15 +21,20 @@
 }
 
 .index-bg-match-dark {
-    background-color:#3A2550 !important
+    background-color:#494f73 !important
 }
 
 .text-intro-align-center{
     text-align: center !important;
 }
 
-.margin-box-top{
-    margin-top: 0.25rem;
+.margin-box-top{margin-top: 0.25rem;}
+
+.p-6 {padding:5rem !important}
+
+.about-us-padding{
+    padding-left:3rem !important;
+    padding-right:3rem !important;
 }
 
 /* Parallax Container */
