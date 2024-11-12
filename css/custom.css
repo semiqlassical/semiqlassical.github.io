@@ -62,3 +62,23 @@
         background-attachment: scroll; /* Disables fixed attachment on smaller screens */
     }
 }
+
+.custom-service-item {
+    position: relative;
+    padding: 45px 30px;
+    background: linear-gradient(to bottom, #b62cba, #1d396d);
+    transition: .5s;
+}
+
+.custom-service-item .custom-service-icon {
+    margin: 0 auto 20px auto;
+    width: 90px;
+    height: 90px;
+    color: var(--primary);
+    background: rgba(232, 9, 39, 0.025); /* var(--light);*/
+    transition: .5s;
+}
+
+.custom-service-item:hover .custom-service-icon {
+    background: rgba(232, 9, 39, 0.025);
+}
