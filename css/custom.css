@@ -66,9 +66,17 @@
 .custom-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #b62cba, #1d396d);
+    background: linear-gradient(to bottom, #9d39a1, #4a3267);
     transition: .5s;
 }
+
+.bio-service-item {
+    position: relative;
+    padding: 45px 30px;
+    background: linear-gradient(to bottom, #7f7880, #4a3267);
+    transition: .5s;
+}
+
 
 .custom-service-item .custom-service-icon {
     margin: 0 auto 20px auto;
@@ -80,5 +88,18 @@
 }
 
 .custom-service-item:hover .custom-service-icon {
+    background: rgba(232, 9, 39, 0.025);
+}
+
+.bio-service-item .bio-service-icon {
+    margin: 0 auto 20px auto;
+    width: 90px;
+    height: 90px;
+    color: var(--primary);
+    background: rgba(232, 9, 39, 0.025); /* var(--light);*/
+    transition: .5s;
+}
+
+.bio-service-item:hover .bio-service-icon {
     background: rgba(232, 9, 39, 0.025);
 }
