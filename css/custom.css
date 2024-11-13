@@ -66,7 +66,7 @@
 .custom-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #9d39a1, #4a3267);
+    background: linear-gradient(to bottom, #3982a1, #4a3267);
     transition: .5s;
 }
 
@@ -107,3 +107,5 @@
 body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1.5;color:#dfdada;background-color:#ffffff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0) !important}
 
 .h1 { font-family: monospace; font-size: 1px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 1.1px; !important;} h3 { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; !important;} blockquote { font-family: monospace; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: monospace; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
+
+.custom-pt-5{padding-top:1rem !important}
