@@ -69,7 +69,7 @@
     background: linear-gradient(to bottom, #4B6E82, #27596f, #542e81);
     transition: .5s;
     aspect-ratio: 0.8;
-    max-height: 450px;
+    max-height: 900px !important;
 }
 
 .bio-service-item {
@@ -132,4 +132,13 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     height: 100%;
     object-fit: cover; /* Ensures the video covers the container */
     z-index: -1; /* Places the video behind any other content */
+}
+
+.img_fit_to_box {
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.box_fit_to_text {
+    display:flex !important;
 }
