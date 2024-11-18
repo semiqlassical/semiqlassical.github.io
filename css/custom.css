@@ -43,7 +43,7 @@
     background-image: url('./img/protein.png'); /* Adjust the path as needed */
     
     /* Set a fixed height; adjust as needed */
-    height: 500px;
+    height: auto;
     
     /* Create the parallax effect */
     background-attachment: fixed;
