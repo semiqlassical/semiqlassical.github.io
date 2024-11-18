@@ -142,3 +142,9 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
 .box_fit_to_text {
     display:flex !important;
 }
+
+.img_fit_to_contain {
+    max-width: 100% !important;
+    max-height: 400px !important;
+    height: auto !important;
+}
