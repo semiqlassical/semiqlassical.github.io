@@ -148,3 +148,12 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     max-height: 400px !important;
     height: auto !important;
 }
+
+.custom-service-item h4 {
+    display: inline-block;
+    padding: 3px 15px;
+    color: #e6dada;
+    background: rgb(0, 48, 40);
+    border-radius: 25px;
+    margin-bottom: 15px;
+}
