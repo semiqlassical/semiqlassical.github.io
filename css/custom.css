@@ -23,7 +23,7 @@
 .index-bg-match-dark {
     background-color:#301b57 !important
 }
-
+/*#301b57*/
 .text-intro-align-center{
     text-align: center !important;
 }
@@ -160,6 +160,6 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
 
 .index-hero-header {
     margin-top: -95px;
-    background: url(../img/bg-hero-index.png) center center no-repeat;
+    background: url(../img/bg-index.png) center center no-repeat;
     background-size: cover;
 }
