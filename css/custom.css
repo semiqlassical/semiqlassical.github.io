@@ -157,3 +157,9 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     border-radius: 25px;
     margin-bottom: 15px;
 }
+
+.index-hero-header {
+    margin-top: -95px;
+    background: url(../img/bg-hero-index.png) center center no-repeat;
+    background-size: cover;
+}
