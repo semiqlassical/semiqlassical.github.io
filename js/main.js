@@ -128,7 +128,7 @@
         const FORCE_PHASE = Math.PI/3; // phase shift for y forcing
 
         // Simulation speed controls
-        const BASE_DT = 0.006;       // base integration step
+        const BASE_DT = 0.0026;       // base integration step
         const SUB_STEPS = 2;         // micro-steps per frame
         const SIM_SPEED = 1.2;       // >1.0 = faster, <1.0 = slower
 
