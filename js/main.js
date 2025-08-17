@@ -87,6 +87,23 @@
         }
         window.addEventListener('resize', updateCenter, { passive: true });
 
+        // Mouse/touch-driven view rotation
+        let mouseX = 0, mouseY = 0;           // normalized [-1,1]
+        let viewYaw = 0, viewPitch = 0;       // smoothed camera angles
+        const AUTO_YAW_SPEED = 0.04;          // subtle auto-rotation (rad/s)
+        const YAW_RANGE = Math.PI / 5;        // max yaw from mouse (±36°)
+        const PITCH_RANGE = Math.PI / 8;      // max pitch from mouse (±22.5°)
+        const VIEW_SMOOTH = 0.08;             // lerp factor per frame
+        function onPointerMove(x, y) {
+            const w = window.innerWidth, h = window.innerHeight;
+            mouseX = (x / w - 0.5) * 2;   // -1..1
+            mouseY = (y / h - 0.5) * 2;   // -1..1
+        }
+        window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length) onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
         // --- Aizawa Attractor ---
         // dx/dt = (z - b) x - d y
         // dy/dt = d x + (z - b) y
@@ -182,8 +199,8 @@
                 const x = pts[idx];
                 if (Math.abs(x) <= JITTER_BAND_X) {
                     // push y and z slightly in random directions
-                    pts[idx + 2] += (Math.random() * 2 - 1) * 1.0/((JITTER_PUSH-Math.abs(x))**2+0.000001);
-                    pts[idx + 1] += 5.0*(Math.random() * 2 - 1) * (JITTER_PUSH-Math.abs(x))**2;
+                    pts[idx + 1] += 7.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
+                    pts[idx + 2] += 7.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
 
                     // project back inside bounding sphere if necessary
                     const x1 = pts[idx], y1 = pts[idx + 1], z1 = pts[idx + 2];
@@ -207,15 +224,17 @@
 
             // Fade trail
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
             ctx.fillRect(0, 0, w, h);
 
-            // Projection parameters
+            // Mouse-driven projection parameters
             const scale = Math.min(w, h) / 6; // fits ~[-4,4] comfortably
-            const yaw = t * 0.12; // rotate around Z for gentle motion
-            const pitch = 0.25 * Math.sin(t * 0.07); // slight rocking around X
-            const cosy = Math.cos(yaw), siny = Math.sin(yaw);
-            const cox = Math.cos(pitch), sinx = Math.sin(pitch);
+            const desiredYaw = mouseX * YAW_RANGE + t * AUTO_YAW_SPEED;
+            const desiredPitch = -mouseY * PITCH_RANGE;
+            viewYaw += (desiredYaw - viewYaw) * VIEW_SMOOTH;
+            viewPitch += (desiredPitch - viewPitch) * VIEW_SMOOTH;
+            const cosy = Math.cos(viewYaw), siny = Math.sin(viewYaw);
+            const cox = Math.cos(viewPitch), sinx = Math.sin(viewPitch);
 
             // Advance dynamics a few micro steps per frame for smoother traces
             stepAizawa(0.006, 2, t);
