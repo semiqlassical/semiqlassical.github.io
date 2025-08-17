@@ -87,23 +87,13 @@
         }
         window.addEventListener('resize', updateCenter, { passive: true });
 
-        // Mouse/touch-driven view rotation
-        let mouseX = 0, mouseY = 0;           // normalized [-1,1]
-        let viewYaw = 0, viewPitch = 0;       // smoothed camera angles
-        const AUTO_YAW_SPEED = 0.04;          // subtle auto-rotation (rad/s)
-        const YAW_RANGE = Math.PI / 5;        // max yaw from mouse (±36°)
-        const PITCH_RANGE = Math.PI / 8;      // max pitch from mouse (±22.5°)
-        const VIEW_SMOOTH = 0.08;             // lerp factor per frame
-        // Start simulation time at t = 2s instead of 0
-        const TIME_OFFSET_S = 5.0;
-        function onPointerMove(x, y) {
-            const w = window.innerWidth, h = window.innerHeight;
-            mouseX = (x / w - 0.5) * 2;   // -1..1
-            mouseY = (y / h - 0.5) * 2;   // -1..1
-        }
-        window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
+        // Pointer tracking for attraction (remove view rotation)
+        // Keep current time offset value
+        const TIME_OFFSET_S = 10.0;
+        let mousePX = centerX, mousePY = centerY; // pointer in pixels
+        window.addEventListener('mousemove', (e) => { mousePX = e.clientX; mousePY = e.clientY; }, { passive: true });
         window.addEventListener('touchmove', (e) => {
-            if (e.touches && e.touches.length) onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+            if (e.touches && e.touches.length) { mousePX = e.touches[0].clientX; mousePY = e.touches[0].clientY; }
         }, { passive: true });
 
         // --- Aizawa Attractor ---
@@ -115,10 +105,10 @@
         const pts = new Float32Array(N * 3); // x, y, z per point
 
         // Bounding sphere params
-        const BOUND_R = 2.3;            // radius of containment sphere (state space units)
+        const BOUND_R = 2.5;            // radius of containment sphere (state space units)
         const BOUND_R2 = BOUND_R * BOUND_R;
         const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
-        const CONTAIN_START = BOUND_R * 0.75; // start applying soft force before the wall
+        const CONTAIN_START = BOUND_R * 0.8; // start applying soft force before the wall
 
         function initAizawa() {
             for (let i = 0; i < N; i++) {
@@ -137,7 +127,16 @@
         const FORCE_FREQ  = 0.8;      // radians per second
         const FORCE_PHASE = Math.PI/3; // phase shift for y forcing
 
-        function stepAizawa(dt, subSteps, t) {
+        // Simulation speed controls
+        const BASE_DT = 0.006;       // base integration step
+        const SUB_STEPS = 2;         // micro-steps per frame
+        const SIM_SPEED = 1.6;       // >1.0 = faster, <1.0 = slower
+
+        // Mouse attraction parameters (state space units)
+        const ATTRACT_K = 0.0;          // base attraction gain
+        const ATTRACT_FALLOFF = 1.0;    // higher = faster falloff with distance
+
+        function stepAizawa(dt, subSteps, t, attractX, attractY) {
             const noiseAmp = 0.005; // tiny noise to prevent clumping
             for (let s = 0; s < subSteps; s++) {
                 const tt = t + s * dt; // advance time within substeps for smooth forcing
@@ -174,9 +173,9 @@
                     let zNew = z + dt * dz + (Math.random() - 0.5) * noiseAmp;
 
                     // Hard projection back inside the bounding sphere (prevents long-term scatter)
-                    const r2 = x * x + y * y + zNew * zNew;
-                    if (r2 > BOUND_R2) {
-                        const r = Math.sqrt(r2);
+                    const r2b = x * x + y * y + zNew * zNew;
+                    if (r2b > BOUND_R2) {
+                        const r = Math.sqrt(r2b);
                         const sProj = BOUND_R / r;
                         x *= sProj; y *= sProj; zNew *= sProj;
                     }
@@ -221,7 +220,7 @@
         function render() {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            const t = performance.now() * 0.001 + TIME_OFFSET_S;
+            const t = performance.now() * 0.001 * SIM_SPEED + TIME_OFFSET_S;
             const nowMs = performance.now();
 
             // Fade trail
@@ -229,42 +228,32 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
             ctx.fillRect(0, 0, w, h);
 
-            // Mouse-driven projection parameters
+            // Projection scale and mouse target in state space (x-y plane)
             const scale = Math.min(w, h) / 6; // fits ~[-4,4] comfortably
-            const desiredYaw = mouseX * YAW_RANGE + t * AUTO_YAW_SPEED;
-            const desiredPitch = -mouseY * PITCH_RANGE;
-            viewYaw += (desiredYaw - viewYaw) * VIEW_SMOOTH;
-            viewPitch += (desiredPitch - viewPitch) * VIEW_SMOOTH;
-            const cosy = Math.cos(viewYaw), siny = Math.sin(viewYaw);
-            const cox = Math.cos(viewPitch), sinx = Math.sin(viewPitch);
+            const attractX = (mousePX - centerX) / scale;
+            const attractY = (mousePY - centerY) / scale;
 
             // Advance dynamics a few micro steps per frame for smoother traces
-            stepAizawa(0.006, 2, t);
+            stepAizawa(BASE_DT * SIM_SPEED, SUB_STEPS, t, attractX, attractY);
 
             // Periodic jitter
             jitterCentralBand(nowMs);
 
-            // Draw points
+            // Draw points (no view rotation)
             ctx.globalCompositeOperation = 'lighter';
             for (let i = 0; i < N; i++) {
                 const idx = i * 3;
-                let x = pts[idx];
-                let y = pts[idx + 1];
-                let z = pts[idx + 2];
+                const x = pts[idx];
+                const y = pts[idx + 1];
+                const z = pts[idx + 2];
 
-                // Rotate around X then Z (simple 3D -> 2D orientation)
-                let y1 = y * cox - z * sinx;
-                let z1 = y * sinx + z * cox;
-                let x2 = x * cosy - y1 * siny;
-                let y2 = x * siny + y1 * cosy;
+                const xp = centerX + x * scale;
+                const yp = centerY + y * scale;
 
-                const xp = centerX + x2 * scale;
-                const yp = centerY + y2 * scale;
-
-                // Depth-based sizing
-                const depth = Math.max(-3, Math.min(3, z1));
+                // Depth-based sizing (use z)
+                const depth = Math.max(-3, Math.min(3, z));
                 const depthNorm = (depth + 3) / 6; // 0..1
-                const dot = 0.6 + depthNorm * 2.4; // 0.6..2.0 px
+                const dot = 0.6 + depthNorm * 2.4;
 
                 ctx.fillStyle = 'rgba(50, 2, 100, ' + (0.5 + 0.75 * depthNorm) + ')';
                 ctx.fillRect(xp, yp, dot, dot);
@@ -277,10 +266,10 @@
         (function prewarmSimulation() {
             let t0 = 0;
             const target = TIME_OFFSET_S;
-            const dt = 0.006;
+            const dt = BASE_DT;
             const subSteps = 4; // modest substeps to keep prewarm quick but stable
             while (t0 < target) {
-                stepAizawa(dt, subSteps, t0);
+                stepAizawa(dt, subSteps, t0, 0, 0);
                 t0 += dt * subSteps;
             }
         })();
