@@ -101,8 +101,9 @@
         // dy/dt = d x + (z - b) y
         // dz/dt = c + a z - z^3/3 - x^2 + e z x^3
         const A = 0.95, B = 0.70, C = 0.60, D = 3.50, E = 0.25;
-        const N = 1000; // number of simultaneous trajectories
-        const pts = new Float32Array(N * 3); // x, y, z per point
+        const N = 750; // number of simultaneous trajectories PER attractor
+        const pts1 = new Float32Array(N * 3); // attr-1 (cool color)
+        const pts2 = new Float32Array(N * 3); // attr-2 (warm color)
 
         // Bounding sphere params
         const BOUND_R =2.4;            // radius of containment sphere (state space units)
@@ -110,16 +111,17 @@
         const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
         const CONTAIN_START = BOUND_R * 0.7; // start applying soft force before the wall
 
-        function initAizawa() {
+        function initAizawaArray(arr) {
             for (let i = 0; i < N; i++) {
                 const idx = i * 3;
                 // Small random cloud near origin
-                pts[idx]     = (Math.random() - 0.5) * 0.5; // x
-                pts[idx + 1] = (Math.random() - 0.5) * 0.5; // y
-                pts[idx + 2] = (Math.random() - 0.5) * 0.5; // z
+                arr[idx]     = (Math.random() - 0.5) * 0.5; // x
+                arr[idx + 1] = (Math.random() - 0.5) * 0.5; // y
+                arr[idx + 2] = (Math.random() - 0.5) * 0.5; // z
             }
         }
-        initAizawa();
+        initAizawaArray(pts1);
+        initAizawaArray(pts2);
 
         // Periodic forcing parameters
         const FORCE_AMP_X = 0.45;     // amplitude for dx forcing (derivative units)
@@ -141,33 +143,94 @@
         const Y_WOBBLE_AMP = 0.6;    // amplitude of Y component in axis (relative before normalization)
         const Y_WOBBLE_FREQ = 0.15;  // radians per second
 
+        // ========= Inter-attractor repulsion =========
+        const INTER_RADIUS = 0.25;        // interaction radius in state space
+        const INTER_RADIUS2 = INTER_RADIUS * INTER_RADIUS;
+        const REPULSE_K = 4.0;            // strong repulsion
+        const CELL = INTER_RADIUS;        // spatial hash cell size ~ interaction radius
 
+        function buildSpatialHash(arr) {
+            const map = new Map();
+            for (let i = 0; i < N; i++) {
+                const idx = i * 3;
+                const x = arr[idx], y = arr[idx+1], z = arr[idx+2];
+                const ix = Math.floor(x / CELL);
+                const iy = Math.floor(y / CELL);
+                const iz = Math.floor(z / CELL);
+                const key = ix + '|' + iy + '|' + iz;
+                let bucket = map.get(key);
+                if (!bucket) { bucket = []; map.set(key, bucket); }
+                bucket.push(idx);
+            }
+            return map;
+        }
 
-        function stepAizawa(dt, subSteps, t, attractX, attractY) {
-            const noiseAmp = 0.0005; // tiny noise to prevent clumping
+        function accumulateRepulsion(x, y, z, otherArr, hash) {
+            const ix = Math.floor(x / CELL);
+            const iy = Math.floor(y / CELL);
+            const iz = Math.floor(z / CELL);
+            let rx = 0, ry = 0, rz = 0;
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dz = -1; dz <= 1; dz++) {
+                        const key = (ix+dx) + '|' + (iy+dy) + '|' + (iz+dz);
+                        const bucket = hash.get(key);
+                        if (!bucket) continue;
+                        for (let k = 0; k < bucket.length; k++) {
+                            const j = bucket[k];
+                            const ox = otherArr[j], oy = otherArr[j+1], oz = otherArr[j+2];
+                            const dxv = x - ox, dyv = y - oy, dzv = z - oz;
+                            const r2 = dxv*dxv + dyv*dyv + dzv*dzv;
+                            if (r2 > 1e-9 && r2 <= INTER_RADIUS2) {
+                                const r = Math.sqrt(r2);
+                                const q = 1 - (r / INTER_RADIUS);  // 0..1
+                                // very sharp falloff: q^4 and 1/r normalization
+                                const mag = REPULSE_K * (q*q*q*q) / (r + 1e-6);
+                                rx += dxv * mag;
+                                ry += dyv * mag;
+                                rz += dzv * mag;
+                            }
+                        }
+                    }
+                }
+            }
+            return [rx, ry, rz];
+        }
+
+        function stepCoupled(dt, subSteps, t) {
             for (let s = 0; s < subSteps; s++) {
-                const tt = t + s * dt; // advance time within substeps for smooth forcing
+                const tt = t + s * dt;
                 const fx = FORCE_AMP_X * Math.sin(FORCE_FREQ * tt);
                 const fy = FORCE_AMP_Y * Math.sin(FORCE_FREQ * tt + FORCE_PHASE);
 
+                // Snapshots for symmetric interaction this substep
+                const snap1 = pts1.slice();
+                const snap2 = pts2.slice();
+                const hash1 = buildSpatialHash(snap1);
+                const hash2 = buildSpatialHash(snap2);
+
+                // Update pts1 influenced by pts2
                 for (let i = 0; i < N; i++) {
                     const idx = i * 3;
-                    let x = pts[idx];
-                    let y = pts[idx + 1];
-                    let z = pts[idx + 2];
+                    let x = pts1[idx];
+                    let y = pts1[idx + 1];
+                    let z = pts1[idx + 2];
 
                     let dx = (z - B) * x - D * y;
                     let dy = D * x + (z - B) * y;
                     let dz = C + A * z - (z * z * z) / 3 - (x * x) + E * z * (x * x * x);
 
-                    // Apply small periodic forcing to x and y dynamics
-                    dx += fx;
-                    dy += fy;
+                    // periodic forcing
+                    dx += fx; dy += fy;
 
-                    // Soft containment force (radial towards origin) as we approach boundary
-                    const r0 = Math.sqrt(x * x + y * y + z * z) + 1e-6;
+                    // inter-attractor repulsion from pts2 snapshot
+                    const [rx, ry, rz] = accumulateRepulsion(x, y, z, snap2, hash2);
+                    dx += rx; dy += ry; dz += rz;
+
+                    // soft containment
+                    const r0 = Math.sqrt(x*x + y*y + z*z) + 1e-6;
                     if (r0 > CONTAIN_START) {
-                        const excess = r0 - CONTAIN_START; // how far beyond start radius
+                        const excess = r0 - CONTAIN_START;
                         const k = CONTAIN_K * (excess / (BOUND_R - CONTAIN_START));
                         const invr = 1.0 / r0;
                         dx += -k * x * invr;
@@ -175,50 +238,90 @@
                         dz += -k * z * invr;
                     }
 
-                    x += dt * dx + (Math.random() - 0.5) * noiseAmp;
-                    y += dt * dy + (Math.random() - 0.5) * noiseAmp;
-                    let zNew = z + dt * dz + (Math.random() - 0.5) * noiseAmp;
+                    x += dt * dx;
+                    y += dt * dy;
+                    let zNew = z + dt * dz;
 
-                    // Hard projection back inside the bounding sphere (prevents long-term scatter)
-                    const r2b = x * x + y * y + zNew * zNew;
+                    // hard projection
+                    const r2b = x*x + y*y + zNew*zNew;
                     if (r2b > BOUND_R2) {
                         const r = Math.sqrt(r2b);
                         const sProj = BOUND_R / r;
                         x *= sProj; y *= sProj; zNew *= sProj;
                     }
 
-                    pts[idx]     = x;
-                    pts[idx + 1] = y;
-                    pts[idx + 2] = zNew;
+                    pts1[idx] = x; pts1[idx+1] = y; pts1[idx+2] = zNew;
+                }
+
+                // Update pts2 influenced by pts1
+                for (let i = 0; i < N; i++) {
+                    const idx = i * 3;
+                    let x = pts2[idx];
+                    let y = pts2[idx + 1];
+                    let z = pts2[idx + 2];
+
+                    let dx = (z - B) * x - D * y;
+                    let dy = D * x + (z - B) * y;
+                    let dz = C + A * z - (z * z * z) / 3 - (x * x) + E * z * (x * x * x);
+
+                    // periodic forcing
+                    dx += fx; dy += fy;
+
+                    // inter-attractor repulsion from pts1 snapshot
+                    const [rx, ry, rz] = accumulateRepulsion(x, y, z, snap1, hash1);
+                    dx += rx; dy += ry; dz += rz;
+
+                    // soft containment
+                    const r0 = Math.sqrt(x*x + y*y + z*z) + 1e-6;
+                    if (r0 > CONTAIN_START) {
+                        const excess = r0 - CONTAIN_START;
+                        const k = CONTAIN_K * (excess / (BOUND_R - CONTAIN_START));
+                        const invr = 1.0 / r0;
+                        dx += -k * x * invr;
+                        dy += -k * y * invr;
+                        dz += -k * z * invr;
+                    }
+
+                    x += dt * dx;
+                    y += dt * dy;
+                    let zNew = z + dt * dz;
+
+                    // hard projection
+                    const r2b = x*x + y*y + zNew*zNew;
+                    if (r2b > BOUND_R2) {
+                        const r = Math.sqrt(r2b);
+                        const sProj = BOUND_R / r;
+                        x *= sProj; y *= sProj; zNew *= sProj;
+                    }
+
+                    pts2[idx] = x; pts2[idx+1] = y; pts2[idx+2] = zNew;
                 }
             }
         }
 
-        // Periodic jitter to central band (prevent clustering)
-        const JITTER_PERIOD_MS = 30;     // every 3s
-        const JITTER_BAND_X = 0.25;        // apply to particles with |x| <= this
-        const JITTER_PUSH = 0.2;          // max displacement applied to y/z per jitter
+        // Periodic jitter to central band (prevent clustering) — apply to any array
+        const JITTER_PERIOD_MS = 30;
+        const JITTER_BAND_X = 0.25;
+        const JITTER_PUSH = 0.2;
         let lastJitterMs = performance.now();
-        function jitterCentralBand(nowMs) {
+        function jitterCentralBand(nowMs, arr) {
             if (nowMs - lastJitterMs < JITTER_PERIOD_MS) return;
             lastJitterMs = nowMs;
             for (let i = 0; i < N; i++) {
                 const idx = i * 3;
-                const x = pts[idx];
+                const x = arr[idx];
                 if (Math.abs(x) <= JITTER_BAND_X) {
-                    // push y and z slightly in random directions
-                    pts[idx + 1] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
-                    pts[idx + 2] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
+                    arr[idx + 1] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
+                    arr[idx + 2] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
 
-                    // project back inside bounding sphere if necessary
-                    const x1 = pts[idx], y1 = pts[idx + 1], z1 = pts[idx + 2];
-                    const r2 = x1 * x1 + y1 * y1 + z1 * z1;
+                    const x1 = arr[idx], y1 = arr[idx + 1], z1 = arr[idx + 2];
+                    const r2 = x1*x1 + y1*y1 + z1*z1;
                     if (r2 > BOUND_R2) {
                         const r = Math.sqrt(r2);
                         const sProj = BOUND_R / r;
-                        pts[idx] = x1 * sProj;
-                        pts[idx + 1] = y1 * sProj;
-                        pts[idx + 2] = z1 * sProj;
+                        arr[idx] = x1 * sProj;
+                        arr[idx + 1] = y1 * sProj;
+                        arr[idx + 2] = z1 * sProj;
                     }
                 }
             }
@@ -236,15 +339,16 @@
             ctx.fillRect(0, 0, w, h);
 
             // Projection scale and mouse target in state space (x-y plane)
-            const scale = Math.min(w, h) / 5; // slightly larger figure (was /6)
+            const scale = Math.min(w, h) / 5; // slightly larger figure
             const attractX = (mousePX - centerX) / scale;
             const attractY = (mousePY - centerY) / scale;
 
-            // Advance dynamics a few micro steps per frame for smoother traces
-            stepAizawa(BASE_DT * SIM_SPEED, SUB_STEPS, t, attractX, attractY);
+            // Advance dynamics (coupled) a few micro steps per frame for smoother traces
+            stepCoupled(BASE_DT * SIM_SPEED, SUB_STEPS, t);
 
-            // Periodic jitter
-            jitterCentralBand(nowMs);
+            // Periodic jitter on both sets
+            // jitterCentralBand(nowMs, pts1);
+            // jitterCentralBand(nowMs, pts2);
 
             // Precompute rotation matrix for this frame (axis-angle -> 3x3)
             const theta = ROT_SPEED * t; // smooth rotation angle
@@ -264,15 +368,14 @@
             const m21 = az*ay*ic + ax*s;
             const m22 = c + az*az*ic;
 
-            // Draw points with view rotation
+            // Draw attr-1 (cool)
             ctx.globalCompositeOperation = 'lighter';
             for (let i = 0; i < N; i++) {
                 const idx = i * 3;
-                const x = pts[idx];
-                const y = pts[idx + 1];
-                const z = pts[idx + 2];
+                const x = pts1[idx];
+                const y = pts1[idx + 1];
+                const z = pts1[idx + 2];
 
-                // Apply rotation around axis (1,0,1)/sqrt(2)
                 const xr = m00*x + m01*y + m02*z;
                 const yr = m10*x + m11*y + m12*z;
                 const zr = m20*x + m21*y + m22*z;
@@ -280,12 +383,33 @@
                 const xp = centerX + xr * scale;
                 const yp = centerY + yr * scale;
 
-                // Depth-based sizing (use rotated z)
                 const depth = Math.max(-3, Math.min(3, zr));
-                const depthNorm = (depth + 3) / 6; // 0..1
-                const dot = 1.0 + depthNorm * 2.0; // slightly bigger dots (was 0.6 + 1.4*depthNorm)
+                const depthNorm = (depth + 3) / 6;
+                const dot = 1.0 + depthNorm * 2.0;
 
                 ctx.fillStyle = 'rgba(0, 100, 200, ' + (0.5 + 0.75 * depthNorm) + ')';
+                ctx.fillRect(xp, yp, dot, dot);
+            }
+
+            // Draw attr-2 (warm)
+            for (let i = 0; i < N; i++) {
+                const idx = i * 3;
+                const x = pts2[idx];
+                const y = pts2[idx + 1];
+                const z = pts2[idx + 2];
+
+                const xr = m00*x + m01*y + m02*z;
+                const yr = m10*x + m11*y + m12*z;
+                const zr = m20*x + m21*y + m22*z;
+
+                const xp = centerX + xr * scale;
+                const yp = centerY + yr * scale;
+
+                const depth = Math.max(-3, Math.min(3, zr));
+                const depthNorm = (depth + 3) / 6;
+                const dot = 1.0 + depthNorm * 2.0;
+
+                ctx.fillStyle = 'rgba(255, 120, 60, ' + (0.45 + 0.75 * depthNorm) + ')';
                 ctx.fillRect(xp, yp, dot, dot);
             }
 
@@ -299,7 +423,7 @@
             const dt = BASE_DT;
             const subSteps = 4; // modest substeps to keep prewarm quick but stable
             while (t0 < target) {
-                stepAizawa(dt, subSteps, t0, 0, 0);
+                stepCoupled(dt, subSteps, t0);
                 t0 += dt * subSteps;
             }
         })();
