@@ -180,3 +180,18 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     background-color: transparent !important; /* override .bg-primary */
 }
 .index-hero-header .container { position: relative; z-index: 1; }
+
+/* Navbar/Menu color overrides */
+.sticky-top.bg-primary {
+    background-color: #000000 !important; /* change this to your desired header/menu color */
+}
+
+/* Mobile menu panel background override */
+@media (max-width: 991.98px) {
+    .navbar .navbar-nav {
+        background-color: rgba(0, 0, 0, 0.5) !important; /* tweak opacity/color as needed */
+    }
+}
+
+/* Optional: remove purple image behind About Us hero */
+/* .hero-header { background: transparent !important; } */
