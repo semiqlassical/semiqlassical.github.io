@@ -97,7 +97,7 @@
     const BASE_DT = 0.006;
     const SUB_STEPS = 2;
     const SIM_SPEED = 1.2;
-    const TIME_OFFSET_S = 12.0;
+    const TIME_OFFSET_S = 0.3;
 
     // Rotation and wobble
     const ROT_SPEED = 0.25;           // rad/s
