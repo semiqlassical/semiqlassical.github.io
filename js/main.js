@@ -87,108 +87,168 @@
         }
         window.addEventListener('resize', updateCenter, { passive: true });
 
-        const P = 700; // particle count
-        const particles = new Float32Array(P * 4);
-        function initParticles() {
-            for (let i = 0; i < P; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const radius = 40 + Math.random() * 140;
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
-                const idx = i * 4;
-                particles[idx] = x;
-                particles[idx + 1] = y;
-                particles[idx + 2] = (Math.random() - 0.5) * 0.2;
-                particles[idx + 3] = (Math.random() - 0.5) * 0.2;
+        // --- Aizawa Attractor ---
+        // dx/dt = (z - b) x - d y
+        // dy/dt = d x + (z - b) y
+        // dz/dt = c + a z - z^3/3 - x^2 + e z x^3
+        const A = 0.95, B = 0.70, C = 0.60, D = 3.50, E = 0.25;
+        const N = 2000; // number of simultaneous trajectories
+        const pts = new Float32Array(N * 3); // x, y, z per point
+
+        // Bounding sphere params
+        const BOUND_R = 2.5;            // radius of containment sphere (state space units)
+        const BOUND_R2 = BOUND_R * BOUND_R;
+        const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
+        const CONTAIN_START = BOUND_R * 0.75; // start applying soft force before the wall
+
+        function initAizawa() {
+            for (let i = 0; i < N; i++) {
+                const idx = i * 3;
+                // Small random cloud near origin
+                pts[idx]     = (Math.random() - 0.5) * 0.5; // x
+                pts[idx + 1] = (Math.random() - 0.5) * 0.5; // y
+                pts[idx + 2] = (Math.random() - 0.5) * 0.5; // z
             }
         }
-        initParticles();
+        initAizawa();
 
-        let phase = 1;
-        let lastSwitch = performance.now();
-        const switchEvery = 3500;
+        // Periodic forcing parameters
+        const FORCE_AMP_X = 0.45;     // amplitude for dx forcing (derivative units)
+        const FORCE_AMP_Y = 0.27;     // amplitude for dy forcing (softer)
+        const FORCE_FREQ  = 0.8;      // radians per second
+        const FORCE_PHASE = Math.PI/3; // phase shift for y forcing
 
-        function step() {
-            const t = performance.now() * 0.001;
-            const targetX = centerX + Math.sin(t * 0.7) * 160;
-            const targetY = centerY + Math.cos(t * 0.9) * 110;
+        function stepAizawa(dt, subSteps, t) {
+            const noiseAmp = 0.005; // tiny noise to prevent clumping
+            for (let s = 0; s < subSteps; s++) {
+                const tt = t + s * dt; // advance time within substeps for smooth forcing
+                const fx = FORCE_AMP_X * Math.sin(FORCE_FREQ * tt);
+                const fy = FORCE_AMP_Y * Math.sin(FORCE_FREQ * tt + FORCE_PHASE);
 
-            const now = performance.now();
-            if (now - lastSwitch > switchEvery) {
-                phase *= -1;
-                lastSwitch = now;
+                for (let i = 0; i < N; i++) {
+                    const idx = i * 3;
+                    let x = pts[idx];
+                    let y = pts[idx + 1];
+                    let z = pts[idx + 2];
+
+                    let dx = (z - B) * x - D * y;
+                    let dy = D * x + (z - B) * y;
+                    let dz = C + A * z - (z * z * z) / 3 - (x * x) + E * z * (x * x * x);
+
+                    // Apply small periodic forcing to x and y dynamics
+                    dx += fx;
+                    dy += fy;
+
+                    // Soft containment force (radial towards origin) as we approach boundary
+                    const r0 = Math.sqrt(x * x + y * y + z * z) + 1e-6;
+                    if (r0 > CONTAIN_START) {
+                        const excess = r0 - CONTAIN_START; // how far beyond start radius
+                        const k = CONTAIN_K * (excess / (BOUND_R - CONTAIN_START));
+                        const invr = 1.0 / r0;
+                        dx += -k * x * invr;
+                        dy += -k * y * invr;
+                        dz += -k * z * invr;
+                    }
+
+                    x += dt * dx + (Math.random() - 0.5) * noiseAmp;
+                    y += dt * dy + (Math.random() - 0.5) * noiseAmp;
+                    let zNew = z + dt * dz + (Math.random() - 0.5) * noiseAmp;
+
+                    // Hard projection back inside the bounding sphere (prevents long-term scatter)
+                    const r2 = x * x + y * y + zNew * zNew;
+                    if (r2 > BOUND_R2) {
+                        const r = Math.sqrt(r2);
+                        const sProj = BOUND_R / r;
+                        x *= sProj; y *= sProj; zNew *= sProj;
+                    }
+
+                    pts[idx]     = x;
+                    pts[idx + 1] = y;
+                    pts[idx + 2] = zNew;
+                }
             }
+        }
 
-            const k = phase > 0 ? 0.06 : -0.04;
-            const damping = 0.985;
-            const noise = 0.15;
+        // Periodic jitter to central band (prevent clustering)
+        const JITTER_PERIOD_MS = 5000;     // every 5s
+        const JITTER_BAND_X = 0.25;        // apply to particles with |x| <= this
+        const JITTER_PUSH = 0.2;          // max displacement applied to y/z per jitter
+        let lastJitterMs = performance.now();
+        function jitterCentralBand(nowMs) {
+            if (nowMs - lastJitterMs < JITTER_PERIOD_MS) return;
+            lastJitterMs = nowMs;
+            for (let i = 0; i < N; i++) {
+                const idx = i * 3;
+                const x = pts[idx];
+                if (Math.abs(x) <= JITTER_BAND_X) {
+                    // push y and z slightly in random directions
+                    pts[idx + 2] += (Math.random() * 2 - 1) * 1.0/((JITTER_PUSH-Math.abs(x))**2+0.000001);
+                    pts[idx + 1] += 5.0*(Math.random() * 2 - 1) * (JITTER_PUSH-Math.abs(x))**2;
 
-            for (let i = 0; i < P; i++) {
-                const idx = i * 4;
-                const x = particles[idx];
-                const y = particles[idx + 1];
-                let vx = particles[idx + 2];
-                let vy = particles[idx + 3];
-
-                let dx = targetX - x;
-                let dy = targetY - y;
-                const dist = Math.hypot(dx, dy) + 1e-3;
-                dx /= dist; dy /= dist;
-                const force = k * Math.min(2, 140 / dist);
-                const curl = 0.02;
-                const fx = dx * force - dy * curl;
-                const fy = dy * force + dx * curl;
-
-                vx = vx * damping + fx + (Math.random() - 0.5) * noise;
-                vy = vy * damping + fy + (Math.random() - 0.5) * noise;
-
-                let nx = x + vx;
-                let ny = y + vy;
-
-                // Bounds: wrap toward center if far outside viewport
-                if (nx < -50 || nx > window.innerWidth + 50) nx = centerX + (Math.random() - 0.5) * 20;
-                if (ny < -50 || ny > window.innerHeight + 50) ny = centerY + (Math.random() - 0.5) * 20;
-
-                particles[idx] = nx;
-                particles[idx + 1] = ny;
-                particles[idx + 2] = vx;
-                particles[idx + 3] = vy;
+                    // project back inside bounding sphere if necessary
+                    const x1 = pts[idx], y1 = pts[idx + 1], z1 = pts[idx + 2];
+                    const r2 = x1 * x1 + y1 * y1 + z1 * z1;
+                    if (r2 > BOUND_R2) {
+                        const r = Math.sqrt(r2);
+                        const sProj = BOUND_R / r;
+                        pts[idx] = x1 * sProj;
+                        pts[idx + 1] = y1 * sProj;
+                        pts[idx + 2] = z1 * sProj;
+                    }
+                }
             }
         }
 
         function render() {
-            // Fade trail (lighter to reveal motion more clearly)
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const t = performance.now() * 0.001;
+            const nowMs = performance.now();
+
+            // Fade trail
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
-            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.fillRect(0, 0, w, h);
 
-            // Brighter particle dots
+            // Projection parameters
+            const scale = Math.min(w, h) / 6; // fits ~[-4,4] comfortably
+            const yaw = t * 0.12; // rotate around Z for gentle motion
+            const pitch = 0.25 * Math.sin(t * 0.07); // slight rocking around X
+            const cosy = Math.cos(yaw), siny = Math.sin(yaw);
+            const cox = Math.cos(pitch), sinx = Math.sin(pitch);
+
+            // Advance dynamics a few micro steps per frame for smoother traces
+            stepAizawa(0.006, 2, t);
+
+            // Periodic jitter
+            jitterCentralBand(nowMs);
+
+            // Draw points
             ctx.globalCompositeOperation = 'lighter';
-            const dotSize = 1.2; // CSS pixels
-            ctx.fillStyle = 'rgba(115, 2, 100, 0.85)';
-            for (let i = 0; i < P; i++) {
-                const idx = i * 4;
-                const x = particles[idx];
-                const y = particles[idx + 1];
-                ctx.fillRect(x, y, dotSize, dotSize);
+            for (let i = 0; i < N; i++) {
+                const idx = i * 3;
+                let x = pts[idx];
+                let y = pts[idx + 1];
+                let z = pts[idx + 2];
+
+                // Rotate around X then Z (simple 3D -> 2D orientation)
+                let y1 = y * cox - z * sinx;
+                let z1 = y * sinx + z * cox;
+                let x2 = x * cosy - y1 * siny;
+                let y2 = x * siny + y1 * cosy;
+
+                const xp = centerX + x2 * scale;
+                const yp = centerY + y2 * scale;
+
+                // Depth-based sizing
+                const depth = Math.max(-3, Math.min(3, z1));
+                const depthNorm = (depth + 3) / 6; // 0..1
+                const dot = 0.6 + depthNorm * 1.4; // 0.6..2.0 px
+
+                ctx.fillStyle = 'rgba(115, 2, 100, ' + (0.25 + 0.75 * depthNorm) + ')';
+                ctx.fillRect(xp, yp, dot, dot);
             }
 
-            // Filaments
-            ctx.beginPath();
-            for (let i = 0; i < P; i += 7) {
-                const i2 = (i + 53) % P;
-                const x1 = particles[i * 4];
-                const y1 = particles[i * 4 + 1];
-                const x2 = particles[i2 * 4];
-                const y2 = particles[i2 * 4 + 1];
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-            }
-            ctx.lineWidth = 0.8;
-            ctx.strokeStyle = 'rgba(84, 46, 129, 0.5)';
-            ctx.stroke();
-
-            step();
             requestAnimationFrame(render);
         }
         requestAnimationFrame(render);
