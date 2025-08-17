@@ -67,9 +67,9 @@
     position: relative;
     padding: 45px 30px;
     background: linear-gradient(180deg,
-        rgba(75, 110, 130, 0.50),
-        rgba(39, 89, 111, 0.40),
-        rgba(84, 46, 129, 0.50)
+        rgba(0, 0, 0, 0.5),
+        rgba(17, 20, 20, 0.4),
+        rgba(36, 2, 78, 0.5)
     ) !important;
     backdrop-filter: blur(8px) saturate(120%);
     -webkit-backdrop-filter: blur(8px) saturate(120%);
