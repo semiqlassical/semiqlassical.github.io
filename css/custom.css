@@ -265,8 +265,8 @@ pre {
 
 /* Make the section subtly separated from background */
 .text-section {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 /* On small screens stack columns nicely */
