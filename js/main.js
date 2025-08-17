@@ -108,7 +108,7 @@
         const BOUND_R = 2.5;            // radius of containment sphere (state space units)
         const BOUND_R2 = BOUND_R * BOUND_R;
         const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
-        const CONTAIN_START = BOUND_R * 0.8; // start applying soft force before the wall
+        const CONTAIN_START = BOUND_R * 0.7; // start applying soft force before the wall
 
         function initAizawa() {
             for (let i = 0; i < N; i++) {
@@ -130,10 +130,10 @@
         // Simulation speed controls
         const BASE_DT = 0.006;       // base integration step
         const SUB_STEPS = 2;         // micro-steps per frame
-        const SIM_SPEED = 1.6;       // >1.0 = faster, <1.0 = slower
+        const SIM_SPEED = 1.2;       // >1.0 = faster, <1.0 = slower
 
         // Mouse attraction parameters (state space units)
-        const ATTRACT_K = 0.0;          // base attraction gain
+        const ATTRACT_K = 1.0;          // base attraction gain
         const ATTRACT_FALLOFF = 1.0;    // higher = faster falloff with distance
 
         function stepAizawa(dt, subSteps, t, attractX, attractY) {
@@ -188,7 +188,7 @@
         }
 
         // Periodic jitter to central band (prevent clustering)
-        const JITTER_PERIOD_MS = 5000;     // every 5s
+        const JITTER_PERIOD_MS = 3000;     // every 3s
         const JITTER_BAND_X = 0.25;        // apply to particles with |x| <= this
         const JITTER_PUSH = 0.2;          // max displacement applied to y/z per jitter
         let lastJitterMs = performance.now();
@@ -278,4 +278,3 @@
     }
 
 })(jQuery);
-
