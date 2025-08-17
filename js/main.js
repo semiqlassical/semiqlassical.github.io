@@ -165,7 +165,7 @@
             // Brighter particle dots
             ctx.globalCompositeOperation = 'lighter';
             const dotSize = 1.2; // CSS pixels
-            ctx.fillStyle = 'rgba(187, 227, 255, 0.85)';
+            ctx.fillStyle = 'rgba(115, 2, 100, 0.85)';
             for (let i = 0; i < P; i++) {
                 const idx = i * 4;
                 const x = particles[idx];

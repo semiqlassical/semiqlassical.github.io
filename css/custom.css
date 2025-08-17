@@ -248,5 +248,8 @@ pre {
     }
 }
 
+/* Override Bootstrap bg-dark */
+.bg-dark { background-color: #000000 !important; }
+
 /* Optional: remove purple image behind About Us hero */
 /* .hero-header { background: transparent !important; } */
