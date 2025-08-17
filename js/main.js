@@ -89,6 +89,16 @@
         centerY = window.innerHeight / 2;
     }
 
+    // Parallax scroll state (zoom + subtle vertical shift)
+    let scrollZoom = 1.0, scrollZoomTarget = 1.0;
+    let parallaxShiftY = 0.0, parallaxShiftYTarget = 0.0; // in CSS px
+    window.addEventListener('scroll', () => {
+        const docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
+        const p = docH > 0 ? Math.min(Math.max(window.scrollY / docH, 0), 1) : 0; // 0..1 across page
+        scrollZoomTarget = 1.0 + p * 1.0;      // up to +100% zoom at bottom
+        parallaxShiftYTarget = p * 120;          // up to 120px downward shift (background moves slower)
+    }, { passive: true });
+
     // ================= Simulation (CPU) =================
     // Aizawa parameters
     const A = 0.95, B = 0.70, C = 0.60, D = 3.50, E = 0.25;
@@ -117,7 +127,7 @@
     const FORCE_PHASE = Math.PI / 3;
 
     // Swarms
-    const N = 750;
+    const N = 500;
     const pts1 = new Float32Array(3 * N);
     const pts2 = new Float32Array(3 * N);
 
@@ -294,7 +304,7 @@
     // Periodic jitter to central band (prevent clustering) — apply to any array
     const JITTER_PERIOD_MS = 30;
     const JITTER_BAND_X = 0.25;
-    const JITTER_PUSH = 0.2;
+    const JITTER_PUSH = 0.1;
     let lastJitterMs = performance.now();
     function jitterCentralBand(nowMs, arr) {
         if (nowMs - lastJitterMs < JITTER_PERIOD_MS) return;
@@ -305,7 +315,7 @@
             if (Math.abs(x) <= JITTER_BAND_X) {
                 const w = (JITTER_PUSH - Math.abs(x));
                 if (w > 0) {
-                    const f = 2.0 * (w * w);
+                    const f = 1.0 * (w * w);
                     arr[idx + 1] += 2.0 * (Math.random() * 2 - 1) * f;
                     arr[idx + 2] += 2.0 * (Math.random() * 2 - 1) * f;
                 }
@@ -445,14 +455,18 @@
         }
 
         // Projection scale
-        const scale = Math.min(w, h) / 5; // slightly larger figure
+        const baseScale = Math.min(w, h) / 5; // slightly larger figure
+
+        // Smooth parallax responses
+        scrollZoom += (scrollZoomTarget - scrollZoom) * 0.08;
+        parallaxShiftY += (parallaxShiftYTarget - parallaxShiftY) * 0.08;
 
         // Advance dynamics (coupled)
         stepCoupled(BASE_DT * SIM_SPEED, SUB_STEPS, t);
 
         // Optional jitter
-        // jitterCentralBand(nowMs, pts1);
-        // jitterCentralBand(nowMs, pts2);
+        jitterCentralBand(nowMs, pts1);
+        jitterCentralBand(nowMs, pts2);
 
         // Rotation matrix (axis-angle with Y wobble)
         const theta = ROT_SPEED * t;
@@ -479,10 +493,10 @@
             m20, m21, m22
         ]));
         gl.uniform2f(u_resolution, canvas.width, canvas.height);
-        gl.uniform2f(u_centerPx, centerX * dpr, centerY * dpr);
-        gl.uniform1f(u_scalePx, scale * dpr);
-        gl.uniform1f(u_dotBase, 1.5);
-        gl.uniform1f(u_dotGain, 3.0);
+        gl.uniform2f(u_centerPx, centerX * dpr, (centerY + parallaxShiftY) * dpr);
+        gl.uniform1f(u_scalePx, baseScale * scrollZoom * dpr);
+        gl.uniform1f(u_dotBase, 1.0);
+        gl.uniform1f(u_dotGain, 4.0);
 
         // Fade previous frame with translucent black quad
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -490,7 +504,7 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, fadeQuad);
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-        gl.uniform1f(fade_u_fade, 0.05); // trail fade
+        gl.uniform1f(fade_u_fade, 0.06); // trail fade
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
         // Additive blending for points
@@ -502,7 +516,7 @@
         gl.bufferData(gl.ARRAY_BUFFER, pts1, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(loc_a_pos);
         gl.vertexAttribPointer(loc_a_pos, 3, gl.FLOAT, false, 0, 0);
-        gl.uniform3f(u_color, 0.0, 100.0, 200.0);
+        gl.uniform3f(u_color, 0.0, 130.0, 200.0);
         gl.uniform1f(u_alphaBase, 0.5);
         gl.uniform1f(u_alphaGain, 0.75);
         gl.drawArrays(gl.POINTS, 0, N);
@@ -512,7 +526,7 @@
         gl.bufferData(gl.ARRAY_BUFFER, pts2, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(loc_a_pos);
         gl.vertexAttribPointer(loc_a_pos, 3, gl.FLOAT, false, 0, 0);
-        gl.uniform3f(u_color, 255.0, 120.0, 60.0);
+        gl.uniform3f(u_color, 255.0, 100.0, 60.0);
         gl.uniform1f(u_alphaBase, 0.45);
         gl.uniform1f(u_alphaGain, 0.75);
         gl.drawArrays(gl.POINTS, 0, N);
