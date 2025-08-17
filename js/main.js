@@ -481,8 +481,8 @@
         gl.uniform2f(u_resolution, canvas.width, canvas.height);
         gl.uniform2f(u_centerPx, centerX * dpr, centerY * dpr);
         gl.uniform1f(u_scalePx, scale * dpr);
-        gl.uniform1f(u_dotBase, 1.0);
-        gl.uniform1f(u_dotGain, 2.0);
+        gl.uniform1f(u_dotBase, 1.5);
+        gl.uniform1f(u_dotGain, 3.0);
 
         // Fade previous frame with translucent black quad
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
