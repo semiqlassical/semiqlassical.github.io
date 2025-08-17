@@ -159,7 +159,7 @@
         function render() {
             // Fade trail (lighter to reveal motion more clearly)
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(30, 18, 56, 0.06)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
             ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
             // Brighter particle dots
