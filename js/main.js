@@ -101,11 +101,11 @@
         // dy/dt = d x + (z - b) y
         // dz/dt = c + a z - z^3/3 - x^2 + e z x^3
         const A = 0.95, B = 0.70, C = 0.60, D = 3.50, E = 0.25;
-        const N = 2000; // number of simultaneous trajectories
+        const N = 1000; // number of simultaneous trajectories
         const pts = new Float32Array(N * 3); // x, y, z per point
 
         // Bounding sphere params
-        const BOUND_R = 2.5;            // radius of containment sphere (state space units)
+        const BOUND_R =2.4;            // radius of containment sphere (state space units)
         const BOUND_R2 = BOUND_R * BOUND_R;
         const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
         const CONTAIN_START = BOUND_R * 0.7; // start applying soft force before the wall
@@ -128,16 +128,23 @@
         const FORCE_PHASE = Math.PI/3; // phase shift for y forcing
 
         // Simulation speed controls
-        const BASE_DT = 0.0026;       // base integration step
+        const BASE_DT = 0.006;       // base integration step
         const SUB_STEPS = 2;         // micro-steps per frame
         const SIM_SPEED = 1.2;       // >1.0 = faster, <1.0 = slower
 
-        // Mouse attraction parameters (state space units)
-        const ATTRACT_K = 1.0;          // base attraction gain
-        const ATTRACT_FALLOFF = 1.0;    // higher = faster falloff with distance
+        // View rotation (around 45° axis in XZ plane: axis = normalize([1,0,1]))
+        const ROT_AX = Math.SQRT1_2; // 1/sqrt(2)
+        // const ROT_AY = 0.0;
+        const ROT_AZ = Math.SQRT1_2; // 1/sqrt(2)
+        const ROT_SPEED = 0.25;      // radians per second (slow, smooth)
+        // Time-dependent Y-axis wobble for the rotation axis
+        const Y_WOBBLE_AMP = 0.6;    // amplitude of Y component in axis (relative before normalization)
+        const Y_WOBBLE_FREQ = 0.15;  // radians per second
+
+
 
         function stepAizawa(dt, subSteps, t, attractX, attractY) {
-            const noiseAmp = 0.005; // tiny noise to prevent clumping
+            const noiseAmp = 0.0005; // tiny noise to prevent clumping
             for (let s = 0; s < subSteps; s++) {
                 const tt = t + s * dt; // advance time within substeps for smooth forcing
                 const fx = FORCE_AMP_X * Math.sin(FORCE_FREQ * tt);
@@ -188,7 +195,7 @@
         }
 
         // Periodic jitter to central band (prevent clustering)
-        const JITTER_PERIOD_MS = 3000;     // every 3s
+        const JITTER_PERIOD_MS = 30;     // every 3s
         const JITTER_BAND_X = 0.25;        // apply to particles with |x| <= this
         const JITTER_PUSH = 0.2;          // max displacement applied to y/z per jitter
         let lastJitterMs = performance.now();
@@ -200,8 +207,8 @@
                 const x = pts[idx];
                 if (Math.abs(x) <= JITTER_BAND_X) {
                     // push y and z slightly in random directions
-                    pts[idx + 1] += 7.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
-                    pts[idx + 2] += 7.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
+                    pts[idx + 1] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
+                    pts[idx + 2] += 2.0*(Math.random() * 2 - 1) * ((JITTER_PUSH-Math.abs(x))**2);
 
                     // project back inside bounding sphere if necessary
                     const x1 = pts[idx], y1 = pts[idx + 1], z1 = pts[idx + 2];
@@ -225,7 +232,7 @@
 
             // Fade trail
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.fillRect(0, 0, w, h);
 
             // Projection scale and mouse target in state space (x-y plane)
@@ -239,7 +246,25 @@
             // Periodic jitter
             jitterCentralBand(nowMs);
 
-            // Draw points (no view rotation)
+            // Precompute rotation matrix for this frame (axis-angle -> 3x3)
+            const theta = ROT_SPEED * t; // smooth rotation angle
+            const c = Math.cos(theta), s = Math.sin(theta), ic = 1 - c;
+            // Time-varying rotation axis: start from (1, 0, 1), add Y wobble, then normalize
+            const ayDyn = Y_WOBBLE_AMP * Math.sin(Y_WOBBLE_FREQ * t);
+            let ax = 1.0, ay = ayDyn, az = 1.0;
+            const invLen = 1.0 / Math.hypot(ax, ay, az);
+            ax *= invLen; ay *= invLen; az *= invLen;
+            const m00 = c + ax*ax*ic;
+            const m01 = ax*ay*ic - az*s;
+            const m02 = ax*az*ic + ay*s;
+            const m10 = ay*ax*ic + az*s;
+            const m11 = c + ay*ay*ic;
+            const m12 = ay*az*ic - ax*s;
+            const m20 = az*ax*ic - ay*s;
+            const m21 = az*ay*ic + ax*s;
+            const m22 = c + az*az*ic;
+
+            // Draw points with view rotation
             ctx.globalCompositeOperation = 'lighter';
             for (let i = 0; i < N; i++) {
                 const idx = i * 3;
@@ -247,15 +272,20 @@
                 const y = pts[idx + 1];
                 const z = pts[idx + 2];
 
-                const xp = centerX + x * scale;
-                const yp = centerY + y * scale;
+                // Apply rotation around axis (1,0,1)/sqrt(2)
+                const xr = m00*x + m01*y + m02*z;
+                const yr = m10*x + m11*y + m12*z;
+                const zr = m20*x + m21*y + m22*z;
 
-                // Depth-based sizing (use z)
-                const depth = Math.max(-3, Math.min(3, z));
+                const xp = centerX + xr * scale;
+                const yp = centerY + yr * scale;
+
+                // Depth-based sizing (use rotated z)
+                const depth = Math.max(-3, Math.min(3, zr));
                 const depthNorm = (depth + 3) / 6; // 0..1
-                const dot = 0.6 + depthNorm * 2.4;
+                const dot = 0.6 + depthNorm * 1.4;
 
-                ctx.fillStyle = 'rgba(50, 2, 100, ' + (0.5 + 0.75 * depthNorm) + ')';
+                ctx.fillStyle = 'rgba(0, 100, 250, ' + (0.5 + 0.75 * depthNorm) + ')';
                 ctx.fillRect(xp, yp, dot, dot);
             }
 
