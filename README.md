@@ -1,1 +1,0 @@
-# semiqlassical.github.io

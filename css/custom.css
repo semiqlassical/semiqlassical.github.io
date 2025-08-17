@@ -21,7 +21,7 @@
 }
 
 .index-bg-match-dark {
-    background-color:#301b57 !important
+    background-color: transparent !important; /* allow canvas to show through */
 }
 /*#301b57*/
 .text-intro-align-center{
@@ -66,7 +66,15 @@
 .custom-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #4B6E82, #27596f, #542e81);
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.05),
+        rgba(17, 20, 20, 0.4),
+        rgba(36, 2, 78, 0.5)
+    ) !important;
+    backdrop-filter: blur(1px) saturate(120%);
+    -webkit-backdrop-filter: blur(1px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: .5s;
     aspect-ratio: 0.8;
     max-height: 900px !important;
@@ -75,7 +83,14 @@
 .bio-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #2f2e2f, #4a3267);
+    background: linear-gradient(180deg,
+        rgba(47, 46, 47, 0.38),
+        rgba(74, 50, 103, 0.46)
+    ) !important;
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: .5s;
 }
 
@@ -110,9 +125,49 @@
     text-align: justify !important;
 }
 
-body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1.5;color:#dfdada;background-color:#301b57;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0) !important}
+body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1.5;color:#dfdada;background-color:#000000;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0) !important}
 
-.h1 { font-family: monospace; font-size: 1px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 1.1px; !important;} h3 { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; !important;} blockquote { font-family: monospace; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: monospace; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
+/* Fix invalid typography rules */
+.h1 {
+    font-family: monospace;
+    font-size: 1px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 1.1px;
+}
+h3 {
+    font-family: monospace;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 15.4px;
+}
+p {
+    font-family: monospace;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+blockquote {
+    font-family: monospace;
+    font-size: 21px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 30px;
+}
+pre {
+    font-family: monospace;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.5714px;
+}
 
 .custom-pt-5{padding-top:1rem !important}
 
@@ -158,8 +213,63 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     margin-bottom: 15px;
 }
 
+/* Site-wide chaos background */
+.chaos-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none; /* allow interaction with content */
+}
+
+/* Ensure all page content sits above the canvas */
+.site-content { position: relative; z-index: 1; background: transparent; }
+
+/* Make index hero transparent even if bg-primary is present */
 .index-hero-header {
     margin-top: -95px;
-    background: url(../img/bg-index.png) center center no-repeat;
-    background-size: cover;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent !important; /* override .bg-primary */
+}
+.index-hero-header .container { position: relative; z-index: 1; }
+
+/* Navbar/Menu color overrides */
+.sticky-top.bg-primary {
+    background-color: #000000 !important; /* change this to your desired header/menu color */
+}
+
+/* Mobile menu panel background override */
+@media (max-width: 991.98px) {
+    .navbar .navbar-nav {
+        background-color: rgba(0, 0, 0, 0.5) !important; /* tweak opacity/color as needed */
+    }
+}
+
+/* Override Bootstrap bg-dark */
+.bg-dark { background-color: #000000 !important; }
+
+/* Optional: remove purple image behind About Us hero */
+/* .hero-header { background: transparent !important; } */
+
+/* Simple text-style section with customizable background */
+.text-section {
+    background: var(--section-bg, rgba(0, 0, 0, 0.35));
+}
+
+/* Headings and text defaults for simplified sections */
+.text-section h1, .text-section h5, .text-section h6 { color: #e8f1f6; }
+.text-section p { color: #cfd8dc; }
+
+/* Make the section subtly separated from background */
+.text-section {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* On small screens stack columns nicely */
+@media (max-width: 767.98px) {
+    .text-section .row.g-4 > [class^="col-"] { margin-bottom: 1rem; }
 }
