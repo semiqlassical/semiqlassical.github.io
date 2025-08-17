@@ -71,8 +71,8 @@
         rgba(17, 20, 20, 0.4),
         rgba(36, 2, 78, 0.5)
     ) !important;
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    backdrop-filter: blur(1px) saturate(120%);
+    -webkit-backdrop-filter: blur(1px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.10);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: .5s;

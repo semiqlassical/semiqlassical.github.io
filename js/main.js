@@ -232,11 +232,11 @@
 
             // Fade trail
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, w, h);
 
             // Projection scale and mouse target in state space (x-y plane)
-            const scale = Math.min(w, h) / 6; // fits ~[-4,4] comfortably
+            const scale = Math.min(w, h) / 5; // slightly larger figure (was /6)
             const attractX = (mousePX - centerX) / scale;
             const attractY = (mousePY - centerY) / scale;
 
@@ -283,9 +283,9 @@
                 // Depth-based sizing (use rotated z)
                 const depth = Math.max(-3, Math.min(3, zr));
                 const depthNorm = (depth + 3) / 6; // 0..1
-                const dot = 0.6 + depthNorm * 1.4;
+                const dot = 1.0 + depthNorm * 2.0; // slightly bigger dots (was 0.6 + 1.4*depthNorm)
 
-                ctx.fillStyle = 'rgba(0, 100, 250, ' + (0.5 + 0.75 * depthNorm) + ')';
+                ctx.fillStyle = 'rgba(0, 100, 200, ' + (0.5 + 0.75 * depthNorm) + ')';
                 ctx.fillRect(xp, yp, dot, dot);
             }
 
