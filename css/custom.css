@@ -21,7 +21,7 @@
 }
 
 .index-bg-match-dark {
-    background-color:#301b57 !important
+    background-color: transparent !important; /* allow canvas to show through */
 }
 /*#301b57*/
 .text-intro-align-center{
@@ -158,8 +158,25 @@ body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1
     margin-bottom: 15px;
 }
 
+/* Site-wide chaos background */
+.chaos-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none; /* allow interaction with content */
+}
+
+/* Ensure all page content sits above the canvas */
+.site-content { position: relative; z-index: 1; background: transparent; }
+
+/* Make index hero transparent even if bg-primary is present */
 .index-hero-header {
     margin-top: -95px;
-    background: url(../img/bg-index.png) center center no-repeat;
-    background-size: cover;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent !important; /* override .bg-primary */
 }
+.index-hero-header .container { position: relative; z-index: 1; }
