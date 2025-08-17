@@ -67,7 +67,7 @@
     position: relative;
     padding: 45px 30px;
     background: linear-gradient(180deg,
-        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.05),
         rgba(17, 20, 20, 0.4),
         rgba(36, 2, 78, 0.5)
     ) !important;
@@ -253,3 +253,23 @@ pre {
 
 /* Optional: remove purple image behind About Us hero */
 /* .hero-header { background: transparent !important; } */
+
+/* Simple text-style section with customizable background */
+.text-section {
+    background: var(--section-bg, rgba(0, 0, 0, 0.35));
+}
+
+/* Headings and text defaults for simplified sections */
+.text-section h1, .text-section h5, .text-section h6 { color: #e8f1f6; }
+.text-section p { color: #cfd8dc; }
+
+/* Make the section subtly separated from background */
+.text-section {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* On small screens stack columns nicely */
+@media (max-width: 767.98px) {
+    .text-section .row.g-4 > [class^="col-"] { margin-bottom: 1rem; }
+}
