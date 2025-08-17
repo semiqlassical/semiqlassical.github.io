@@ -94,6 +94,8 @@
         const YAW_RANGE = Math.PI / 5;        // max yaw from mouse (±36°)
         const PITCH_RANGE = Math.PI / 8;      // max pitch from mouse (±22.5°)
         const VIEW_SMOOTH = 0.08;             // lerp factor per frame
+        // Start simulation time at t = 2s instead of 0
+        const TIME_OFFSET_S = 5.0;
         function onPointerMove(x, y) {
             const w = window.innerWidth, h = window.innerHeight;
             mouseX = (x / w - 0.5) * 2;   // -1..1
@@ -113,7 +115,7 @@
         const pts = new Float32Array(N * 3); // x, y, z per point
 
         // Bounding sphere params
-        const BOUND_R = 2.5;            // radius of containment sphere (state space units)
+        const BOUND_R = 2.3;            // radius of containment sphere (state space units)
         const BOUND_R2 = BOUND_R * BOUND_R;
         const CONTAIN_K = 0.30;         // strength of soft centripetal force when near boundary
         const CONTAIN_START = BOUND_R * 0.75; // start applying soft force before the wall
@@ -219,7 +221,7 @@
         function render() {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            const t = performance.now() * 0.001;
+            const t = performance.now() * 0.001 + TIME_OFFSET_S;
             const nowMs = performance.now();
 
             // Fade trail
@@ -262,14 +264,27 @@
                 // Depth-based sizing
                 const depth = Math.max(-3, Math.min(3, z1));
                 const depthNorm = (depth + 3) / 6; // 0..1
-                const dot = 0.6 + depthNorm * 1.4; // 0.6..2.0 px
+                const dot = 0.6 + depthNorm * 2.4; // 0.6..2.0 px
 
-                ctx.fillStyle = 'rgba(115, 2, 100, ' + (0.25 + 0.75 * depthNorm) + ')';
+                ctx.fillStyle = 'rgba(50, 2, 100, ' + (0.5 + 0.75 * depthNorm) + ')';
                 ctx.fillRect(xp, yp, dot, dot);
             }
 
             requestAnimationFrame(render);
         }
+
+        // Pre-warm simulation so first frame reflects t = TIME_OFFSET_S
+        (function prewarmSimulation() {
+            let t0 = 0;
+            const target = TIME_OFFSET_S;
+            const dt = 0.006;
+            const subSteps = 4; // modest substeps to keep prewarm quick but stable
+            while (t0 < target) {
+                stepAizawa(dt, subSteps, t0);
+                t0 += dt * subSteps;
+            }
+        })();
+
         requestAnimationFrame(render);
     }
 
