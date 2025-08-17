@@ -66,7 +66,15 @@
 .custom-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #4B6E82, #27596f, #542e81);
+    background: linear-gradient(180deg,
+        rgba(75, 110, 130, 0.50),
+        rgba(39, 89, 111, 0.40),
+        rgba(84, 46, 129, 0.50)
+    ) !important;
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: .5s;
     aspect-ratio: 0.8;
     max-height: 900px !important;
@@ -75,7 +83,14 @@
 .bio-service-item {
     position: relative;
     padding: 45px 30px;
-    background: linear-gradient(to bottom, #2f2e2f, #4a3267);
+    background: linear-gradient(180deg,
+        rgba(47, 46, 47, 0.38),
+        rgba(74, 50, 103, 0.46)
+    ) !important;
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transition: .5s;
 }
 
@@ -112,7 +127,47 @@
 
 body{margin:0;font-family:monospace;font-size:1rem;font-weight:600;line-height:1.5;color:#dfdada;background-color:#000000;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0) !important}
 
-.h1 { font-family: monospace; font-size: 1px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 1.1px; !important;} h3 { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: monospace; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; !important;} blockquote { font-family: monospace; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: monospace; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
+/* Fix invalid typography rules */
+.h1 {
+    font-family: monospace;
+    font-size: 1px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 1.1px;
+}
+h3 {
+    font-family: monospace;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 15.4px;
+}
+p {
+    font-family: monospace;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+blockquote {
+    font-family: monospace;
+    font-size: 21px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 30px;
+}
+pre {
+    font-family: monospace;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.5714px;
+}
 
 .custom-pt-5{padding-top:1rem !important}
 
