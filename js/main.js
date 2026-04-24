@@ -56,6 +56,67 @@
         ]
     });
 
+    const copyEmailButton = document.querySelector('[data-copy-email]');
+    if (copyEmailButton) {
+        const copyStatus = document.querySelector('[data-copy-status]');
+        const copyIcon = copyEmailButton.querySelector('i');
+        let copyResetTimer;
+
+        const setCopyState = (iconClass, statusText, isCopied) => {
+            if (copyIcon) {
+                copyIcon.className = iconClass;
+            }
+
+            copyEmailButton.classList.toggle('is-copied', isCopied);
+
+            if (copyStatus) {
+                copyStatus.textContent = statusText;
+            }
+        };
+
+        const fallbackCopyText = (text) => {
+            const helper = document.createElement('textarea');
+            helper.value = text;
+            helper.setAttribute('readonly', '');
+            helper.style.position = 'absolute';
+            helper.style.left = '-9999px';
+            document.body.appendChild(helper);
+            helper.select();
+
+            const copied = document.execCommand('copy');
+            document.body.removeChild(helper);
+            return copied;
+        };
+
+        copyEmailButton.addEventListener('click', async function () {
+            const email = this.getAttribute('data-copy-email');
+            let copied = false;
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(email);
+                    copied = true;
+                } else {
+                    copied = fallbackCopyText(email);
+                }
+            } catch (error) {
+                copied = fallbackCopyText(email);
+            }
+
+            clearTimeout(copyResetTimer);
+
+            if (copied) {
+                setCopyState('fa fa-check', 'Email address copied to clipboard.', true);
+            } else {
+                setCopyState('fa fa-copy', 'Unable to copy email address.', false);
+            }
+
+            copyResetTimer = window.setTimeout(() => {
+                setCopyState('fa fa-copy', '', false);
+            }, 1800);
+        });
+    }
+
     // ========== Chaotic Attractor (WebGL) ==========
     const canvas = document.getElementById('chaosCanvas');
     if (!canvas) return;
