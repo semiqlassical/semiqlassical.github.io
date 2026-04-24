@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+._*
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs and caches
+*.log
+.cache/
+.sass-cache/
+coverage/
+
+# Common local dependency and build outputs
+node_modules/
+dist/
+build/
