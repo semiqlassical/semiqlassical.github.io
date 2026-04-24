@@ -1,5 +1,53 @@
 /* custom.css */
 
+html {
+    scroll-behavior: smooth;
+}
+
+/* Navbar dropdown - dark glass theme */
+.navbar .dropdown-menu {
+    background: rgba(30, 30, 30, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    min-width: 130px;
+    padding: 6px 0;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+    color: rgba(255, 255, 255, 0.72);
+    font-family: monospace;
+    font-size: 0.88rem;
+    padding: 8px 18px;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.navbar .no-caret::after {
+    display: none;
+}
+
+/* Mobile: keep dropdown consistent inside collapsed nav */
+@media (max-width: 991.98px) {
+    .navbar .dropdown-menu {
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding-left: 12px;
+    }
+}
+
 .index-2sec-title {
     color:whitesmoke
 }
