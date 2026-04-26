@@ -20,3 +20,6 @@ coverage/
 node_modules/
 dist/
 build/
+
+# Private internal notes
+.internal/
