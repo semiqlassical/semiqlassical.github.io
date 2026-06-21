@@ -2,7 +2,7 @@
    Corner chaotic attractor (Aizawa, coupled swarms) — WebGL2
    Adapted from the site-wide background on the main page (js/main.js) to run
    scoped to its own canvas box (top-right corner motif) instead of the window.
-   Brand-recolored to the collateral teal/violet. Respects reduced motion.
+   Uses the exact main-page attractor colors. Respects reduced motion.
    ========================================================================= */
 (function () {
   "use strict";
@@ -35,7 +35,7 @@
 
   // ================= Simulation (CPU) — Aizawa =================
   var A = 0.95, B = 0.70, C = 0.60, D = 3.50, E = 0.25;
-  var BASE_DT = 0.006, SUB_STEPS = 2, SIM_SPEED = 1.2, TIME_OFFSET_S = 0.3;
+  var BASE_DT = 0.006, SUB_STEPS = 2, SIM_SPEED = 0.85, TIME_OFFSET_S = 0.3;
   var ROT_SPEED = 0.25, Y_WOBBLE_AMP = 0.6, Y_WOBBLE_FREQ = 0.15;
   var BOUND_R = 2.4, BOUND_R2 = BOUND_R * BOUND_R;
   var CONTAIN_START = 0.7 * BOUND_R, CONTAIN_K = 0.30;
@@ -176,7 +176,7 @@
   var COL1 = [0, 130, 200], COL2 = [255, 100, 60];
 
   function drawFrame(t) {
-    var baseScale = Math.min(boxW(), boxH()) / 4.6;
+    var baseScale = Math.min(boxW(), boxH()) / 5;
 
     var theta = ROT_SPEED * t;
     var c = Math.cos(theta), s = Math.sin(theta), ic = 1 - c;
