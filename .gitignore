@@ -21,5 +21,9 @@ node_modules/
 dist/
 build/
 
+# Exception: /build is the collaboration landing page, not a build-output dir
+!/build/
+!/build/**
+
 # Private internal notes
 .internal/

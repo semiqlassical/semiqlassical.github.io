@@ -1,0 +1,15 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- semiclassical phase-space orbits — decorative -->
+  <g stroke="rgba(157,140,255,0.55)" stroke-width="0.8">
+    <ellipse cx="200" cy="200" rx="150" ry="64" transform="rotate(-24 200 200)"/>
+    <ellipse cx="200" cy="200" rx="120" ry="50" transform="rotate(-24 200 200)"/>
+    <ellipse cx="200" cy="200" rx="90"  ry="36" transform="rotate(-24 200 200)"/>
+  </g>
+  <g stroke="rgba(63,224,206,0.45)" stroke-width="0.8">
+    <ellipse cx="200" cy="200" rx="150" ry="64" transform="rotate(58 200 200)"/>
+    <ellipse cx="200" cy="200" rx="110" ry="46" transform="rotate(58 200 200)"/>
+  </g>
+  <circle cx="200" cy="200" r="2.4" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="296" cy="168" r="1.8" fill="#9D8CFF"/>
+  <circle cx="118" cy="246" r="1.8" fill="#3FE0CE"/>
+</svg>
