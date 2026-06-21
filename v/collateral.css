@@ -99,6 +99,17 @@ a:focus-visible,button:focus-visible,.box-cta:focus-visible{
 .bg-orbit img{width:100%;height:100%;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* corner chaotic-attractor motif (replaces the rotating orbit on /invest) */
+.bg-attractor{
+  position:absolute;
+  top:-150px;right:-150px;
+  width:500px;height:500px;
+  opacity:0.5;
+  pointer-events:none;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 42%, transparent 70%);
+          mask-image:radial-gradient(circle at 50% 50%, #000 42%, transparent 70%);
+}
+
 /* ---- Shell ---- */
 .wrap{
   position:relative;z-index:1;
@@ -366,6 +377,7 @@ ul.feat li b{color:#fff;}
   .cards{grid-template-columns:1fr;}
   .split{grid-template-columns:1fr;}
   .bg-orbit{width:280px;height:280px;top:-80px;right:-90px;opacity:0.22;}
+  .bg-attractor{width:300px;height:300px;top:-70px;right:-80px;opacity:0.6;}
   .band{padding-left:18px;}
   .whynow{padding-left:20px;}
 }
@@ -382,4 +394,70 @@ ul.feat li b{color:#fff;}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important;}
   .reveal{opacity:1;transform:none;}
+}
+
+/* =========================================================================
+   "Two kinds of AI" investment bubble plot (investor page)
+   ========================================================================= */
+.tk-fig{margin:20px 0 0;position:relative;}
+.tk-svg{width:100%;height:auto;display:block;overflow:visible;}
+.tk-axis-line{stroke:var(--line);stroke-width:1;}
+.tk-grid{stroke:var(--line2);stroke-width:1;stroke-dasharray:2 6;}
+.tk-tick{fill:var(--faint);font-size:12px;font-family:var(--mono);letter-spacing:0.04em;}
+.tk-ytick{fill:var(--faint);font-size:11px;font-family:var(--mono);letter-spacing:0.12em;text-transform:uppercase;}
+.tk-axis-label{fill:var(--mut);font-size:11px;letter-spacing:0.2em;font-family:var(--mono);text-transform:uppercase;}
+.tk-region-label{font-size:12px;letter-spacing:0.22em;font-family:var(--mono);text-transform:uppercase;}
+.tk-title{fill:#fff;font-family:var(--disp);font-weight:600;font-size:13px;}
+.tk-title.t{fill:var(--orange);font-size:15px;font-weight:700;}
+.tk-sub{fill:var(--mut);font-family:var(--mono);font-size:11px;}
+.tk-sub .inv{fill:var(--cy);}
+.tk-subw{fill:var(--ink2);font-family:var(--sans);font-size:11.5px;}
+.tk-sub2{fill:var(--faint);font-family:var(--mono);font-size:10.5px;}
+.tk-leader{stroke-linecap:round;}
+.tk-bubble,.tk-star{cursor:pointer;}
+.tk-fill{transition:fill-opacity .15s ease;}
+.tk-bubble:hover .tk-fill{fill-opacity:.34;}
+
+/* entrance animation */
+.tk-anim .tk-bubble,.tk-anim .tk-star{opacity:0;transform:scale(.3);transform-box:fill-box;transform-origin:center;}
+.tk-anim .tk-title,.tk-anim .tk-sub,.tk-anim .tk-subw,.tk-anim .tk-sub2,.tk-anim .tk-leader{opacity:0;}
+.tk-anim .tk-divider,.tk-anim .tk-region-label{opacity:0;}
+.tk-anim.in .tk-bubble,.tk-anim.in .tk-star{opacity:1;transform:scale(1);
+  transition:opacity .5s ease,transform .6s cubic-bezier(.2,1.25,.4,1);transition-delay:var(--d,0s);}
+.tk-anim.in .tk-title,.tk-anim.in .tk-sub,.tk-anim.in .tk-subw,.tk-anim.in .tk-sub2,.tk-anim.in .tk-leader{opacity:1;transition:opacity .5s ease;transition-delay:var(--d,0s);}
+.tk-anim.in .tk-divider,.tk-anim.in .tk-region-label{opacity:1;transition:opacity .9s ease .15s;}
+
+/* Semiqlassical star glow pulse */
+.tk-star-glow{transform-box:fill-box;transform-origin:center;}
+.tk-anim.in .tk-star-glow{animation:tkpulse 3.4s ease-in-out 1.8s infinite;}
+@keyframes tkpulse{0%,100%{opacity:.4;transform:scale(1);}50%{opacity:.75;transform:scale(1.12);}}
+
+/* legend */
+.tk-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-family:var(--mono);font-size:12px;}
+.tk-leg{display:inline-flex;align-items:center;gap:7px;color:var(--mut);background:none;border:0;cursor:pointer;padding:2px 0;font-family:inherit;font-size:inherit;}
+.tk-leg .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.tk-leg .sw.star{border-radius:0;transform:rotate(45deg);}
+.tk-leg .sw-logo{width:18px;height:18px;flex-shrink:0;display:block;}
+.tk-leg.off{opacity:.45;text-decoration:line-through;}
+.tk-fig.iso .tk-bubble.dim,.tk-fig.iso .tk-title.dim,.tk-fig.iso .tk-sub.dim{opacity:.1 !important;}
+
+/* tooltip */
+.tk-tip{position:fixed;z-index:60;pointer-events:none;max-width:270px;
+  background:rgba(8,8,12,.97);border:1px solid var(--line);border-radius:8px;padding:11px 13px;
+  font-family:var(--sans);font-size:12.5px;color:var(--ink2);line-height:1.5;
+  opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;
+  box-shadow:0 10px 34px rgba(0,0,0,.55);}
+.tk-tip.show{opacity:1;transform:none;}
+.tk-tip .t-name{font-family:var(--disp);font-weight:600;color:#fff;font-size:13.5px;display:block;margin-bottom:4px;}
+.tk-tip .t-co{color:var(--ink);}
+.tk-tip .t-inv{font-family:var(--mono);color:var(--cy);}
+.tk-tip .t-meta{display:block;color:var(--mut);font-size:11.5px;margin-top:5px;}
+.tk-cap{margin-top:13px;font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.55;max-width:88ch;}
+.tk-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+@media (max-width:700px){
+  .tk-title,.tk-sub,.tk-subw,.tk-sub2,.tk-leader{display:none;}
+  .tk-region-label{font-size:14px;}
+  .tk-tick{font-size:15px;}
+  .tk-ytick{font-size:14px;}
 }

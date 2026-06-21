@@ -21,7 +21,7 @@
   <div class="bg-motif" aria-hidden="true">
     <div class="bg-wash"></div>
     <div class="bg-lattice"></div>
-    <div class="bg-orbit"><img src="/v/assets/phase-orbit.svg" alt="" width="470" height="470"></div>
+    <canvas id="chaos-corner" class="bg-attractor"></canvas>
   </div>
 
   <div class="wrap">
@@ -73,6 +73,22 @@
           <span class="tag"><span class="dot"></span>Molecular &amp; protein dynamics</span>
         </div>
         <p class="punch">They look unrelated, but share one foundational need: high-precision physics ML for semiclassical computation. <b>Own that layer and you sit underneath all of them at once.</b></p>
+      </section>
+
+      <section class="reveal" style="animation-delay:.21s">
+        <div class="sec-head">
+          <span class="label">Two kinds of AI <span class="sep-vi">::</span> where the capital sits</span>
+          <span class="hair"></span>
+        </div>
+        <p class="lead">Capital floods <b>low-precision</b> AI — and even “physics AI” runs on low-precision neural surrogates that only approximate the physics. The <b>high-precision</b> layer that actually computes it is the open corner. <b>Semiqlassical owns it.</b></p>
+        <figure class="tk-fig" id="tk-fig" aria-label="Bubble chart of AI investment by numerical precision and application. Capital concentrates in low-precision categories at the left; the high-precision physics corner at the top-right is occupied only by Semiqlassical.">
+          <div class="tk-legend">
+            <button type="button" class="tk-leg" data-family="ai"><span class="sw" style="background:#6F7BD6"></span>low-precision AI / compute</button>
+            <button type="button" class="tk-leg" data-family="sci"><span class="sw" style="background:#3FE0CE"></span>science / physics applications</button>
+            <span class="tk-leg" style="cursor:default"><img class="sw-logo" src="/v/assets/logo-mark.png" alt="" width="18" height="18">Semiqlassical · target</span>
+          </div>
+          <figcaption class="tk-cap">Bubble area = investment, log-scaled (illustrative). Basis varies: AI data-center = capex to 2030; physics-AI / quantum / drug-discovery = 2025 funding; HPC = market size. Axis positions are approximate category placements — the pattern is the message, not exact coordinates. Hover any bubble for examples and sources.</figcaption>
+        </figure>
       </section>
 
       <section class="reveal" style="animation-delay:.24s">
@@ -140,5 +156,7 @@
       <div class="corp">semiqlassical, inc.</div>
     </footer>
   </div>
+  <script src="/v/two-kinds-of-ai.js" defer></script>
+  <script src="/v/chaos-attractor.js" defer></script>
 </body>
 </html>
