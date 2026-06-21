@@ -172,8 +172,8 @@
   gl.disable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);
 
-  // brand colors (rgb 0-255): teal + violet
-  var COL1 = [63, 224, 206], COL2 = [157, 140, 255];
+  // exact main-page attractor colors (rgb 0-255): cool blue + warm orange
+  var COL1 = [0, 130, 200], COL2 = [255, 100, 60];
 
   function drawFrame(t) {
     var baseScale = Math.min(boxW(), boxH()) / 4.6;

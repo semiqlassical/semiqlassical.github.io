@@ -18,7 +18,9 @@
   function ry(y) { return M.t + (1 - y) * PH; }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-  var COLOR = { ai: "#6F7BD6", sci: "#3FE0CE", target: "#FDB414" };
+  // white + amber only: science in off-white, low-precision AI in muted slate,
+  // amber reserved for the Semiqlassical target (the single emphasis color).
+  var COLOR = { ai: "#6E7A8C", sci: "#E6E9EF", target: "#FDB414" };
 
   // ---- data ----
   // x = precision (0-1), y = application (0-1), inv = $B (drives bubble size).
