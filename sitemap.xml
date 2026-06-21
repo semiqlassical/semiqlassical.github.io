@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://semiqlassical.tech/</loc>
-    <lastmod>2026-06-02</lastmod>
+    <lastmod>2026-06-20</lastmod>
+  </url>
+  <url>
+    <loc>https://semiqlassical.tech/build</loc>
+    <lastmod>2026-06-20</lastmod>
   </url>
 </urlset>
