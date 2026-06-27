@@ -308,8 +308,8 @@ ul.feat li b{color:#fff;}
 
 /* collaboration .collab */
 .collab{
-  border:1px solid rgba(63,224,206,0.45);
-  background:linear-gradient(160deg,rgba(63,224,206,0.14),rgba(63,224,206,0.03) 60%,transparent);
+  border:1px solid rgba(255,170,0,0.45);
+  background:linear-gradient(160deg,rgba(255,170,0,0.16),rgba(255,170,0,0.04) 60%,transparent);
 }
 .collab .head{
   font-family:var(--disp);font-weight:600;font-size:clamp(20px,3vw,24px);

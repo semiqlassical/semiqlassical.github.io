@@ -3,49 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Attryx — build on high-precision physics ML</title>
-  <meta name="description" content="Attryx is a high-precision physics ML workbench for semiclassical systems: inspectable, numerically grounded, and built beyond 64-bit limits.">
+  <title>Attryx — build on high-precision physics simulation and ML</title>
+  <meta name="description" content="Attryx is a high-precision physics simulation and ML workbench for semiclassical systems: inspectable, numerically grounded, and built beyond 64-bit limits.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="theme-color" content="#07070A">
-  <meta property="og:title" content="Attryx — high-precision physics ML">
-  <meta property="og:description" content="Inspectable, high-precision physics ML for the regime between quantum and classical.">
+  <meta property="og:title" content="Attryx — high-precision physics simulation and ML">
+  <meta property="og:description" content="Inspectable, high-precision physics simulation and ML for the regime between quantum and classical.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://semiqlassical.tech/build">
   <link rel="icon" type="image/png" href="/img/logo-tiny.png">
   <link rel="apple-touch-icon" href="/img/logo-tiny.png">
   <link rel="preload" as="font" type="font/woff2" href="/v/fonts/space-grotesk-600.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/v/fonts/inter-400.woff2" crossorigin>
-  <link rel="stylesheet" href="/v/collateral.css">
+  <link rel="stylesheet" href="/v/collateral.css?v=20260625-amber-cta">
 </head>
 <body>
   <div class="bg-motif" aria-hidden="true">
     <div class="bg-wash"></div>
     <div class="bg-lattice"></div>
-    <div class="bg-orbit"><img src="/v/assets/phase-orbit.svg" alt="" width="470" height="470"></div>
+    <canvas id="chaos-corner" class="bg-attractor"></canvas>
   </div>
 
   <div class="wrap">
     <header class="masthead reveal">
       <img class="brand-logo" src="/v/assets/logo-darkmode.png" alt="semiqlassical" width="220" height="38">
-      <div class="tagline">high-precision physics ML for semiclassical systems</div>
+      <div class="tagline">high-precision physics simulation + ML for semiclassical systems</div>
       <hr class="rule">
     </header>
 
     <main>
       <section class="hero reveal" style="animation-delay:.06s">
-        <h1><b>Attryx</b> is a <span class="t-cy">high-precision physics ML</span> workbench for the regime between quantum and classical — built from its own language and kernel-level operations, so models stay numerical, inspectable, and physically grounded instead of disappearing behind an LLM black box.</h1>
+        <h1><b>Attryx</b> is a <span class="t-amber">high-precision physics simulation and ML</span> workbench for the regime between quantum and classical — built from its own language and kernel-level operations, so models stay numerical, inspectable, and physically grounded instead of disappearing behind an LLM black box.</h1>
       </section>
 
       <section class="reveal" style="animation-delay:.12s">
         <div class="sec-head">
-          <span class="label">What Attryx is <span class="sep-cy">::</span> physics ML, made inspectable</span>
+          <span class="label">What Attryx is <span class="sep-vi">::</span> simulation + ML, inspectable</span>
           <span class="hair"></span>
         </div>
         <div class="cards">
           <article class="tcard glow-cy">
             <div class="idx">01</div>
-            <h3>Physics ML where precision lives — at the kernel</h3>
-            <p>Its own <b>typesafe language and runtime</b>, a custom autodiff engine, kernel-level tensor math, high-precision numerics for physics ML <b>beyond native 64-bit limits</b>, and automated tensor-network optimization. Built for physics where double precision accumulates error before the model is trustworthy.</p>
+            <h3>Physics simulation and ML where precision lives — at the kernel</h3>
+            <p>Its own <b>typesafe language and runtime</b>, a custom autodiff engine, kernel-level tensor math, high-precision numerics for simulation and physics ML <b>beyond native 64-bit limits</b>, and automated tensor-network optimization. Built for physics where double precision accumulates error before the model is trustworthy.</p>
           </article>
           <article class="tcard glow-vi">
             <div class="idx">02</div>
@@ -54,8 +54,8 @@
           </article>
         </div>
         <div class="band moat">
-          <span class="key">Why physics ML ::</span>
-          <p>The physics that matters lives <b>between quantum and classical</b>. In this regime, useful ML has to stay attached to the physics, and it can't be computed reliably on the standard native 64-bit stack. Native beyond-64-bit computation is the unlock, and it demands <b>software–hardware co-design</b>.</p>
+          <span class="key">Why simulation + ML ::</span>
+          <p>The physics that matters lives <b>between quantum and classical</b>. In this regime, useful ML has to stay attached to direct simulation, and neither works reliably on the standard native 64-bit stack. Native beyond-64-bit computation is the unlock, and it demands <b>software–hardware co-design</b>.</p>
         </div>
       </section>
 
@@ -64,7 +64,7 @@
           <span class="label">What you can model with it <span class="sep-vi">::</span> one shared layer</span>
           <span class="hair"></span>
         </div>
-        <p class="lead">Semiclassical physics is the hidden computation layer underneath fields that look unrelated but share the <b>same</b> need for high-precision physics ML:</p>
+        <p class="lead">Semiclassical physics is the hidden computation layer underneath fields that look unrelated but share the <b>same</b> need for high-precision physics simulation and ML:</p>
         <div class="tags">
           <span class="tag"><span class="dot"></span>Sub-nanometer semiconductors</span>
           <span class="tag"><span class="dot"></span>Quantum sensing — e.g. gyroscopes</span>
@@ -82,20 +82,20 @@
         </div>
         <div class="band whynow">
           <span class="key">Why now ::</span>
-          <p>LLMs and generative AI can propose molecules, materials, and device designs faster than anyone can verify them. The bottleneck shifts to <b>high-precision physics ML that can test whether a candidate holds</b> — a need that's <span class="t-cy">growing</span> while the tooling for it stays thin. <b>That's the layer Attryx is built for.</b></p>
+          <p>LLMs and generative AI can propose molecules, materials, and device designs faster than anyone can verify them. The bottleneck shifts to <b>high-precision physics simulation and ML that can test whether a candidate holds</b> — a need that's <span class="t-amber">growing</span> while the tooling for it stays thin. <b>That's the layer Attryx is built for.</b></p>
         </div>
       </section>
 
       <section class="reveal" style="animation-delay:.30s">
         <div class="sec-head">
-          <span class="label">Where it stands <span class="sep-cy">::</span> work with us</span>
+          <span class="label">Where it stands <span class="sep-vi">::</span> work with us</span>
           <span class="hair"></span>
         </div>
         <div class="split">
           <div class="panel">
             <div class="label">Where it stands<span class="hair"></span></div>
             <ul class="feat">
-              <li><b>Attryx (attryx.ai) is live and sold</b> today — a working high-precision physics ML workbench, not a prototype.</li>
+              <li><b>Attryx (attryx.ai) is live and sold</b> today — a working high-precision physics simulation and ML workbench, not a prototype.</li>
               <li>Its own language, runtime, autodiff, kernel-level tensor math, and automated tensor-network optimization, all in one place.</li>
               <li><b>Faculty at Northwestern and the University of Washington</b> are already integrating Attryx into their research.</li>
             </ul>
@@ -106,7 +106,7 @@
             <div class="sub">design partners · collaborators · early users</div>
             <p>We work with researchers and teams who need precision the standard stack can't reach. If you're modeling in this regime — or want to — let's talk.</p>
             <div class="chip">
-              <a href="mailto:info@semiqlassical.tech?subject=Build%20on%20Attryx">info@semiqlassical.tech</a>
+              <a href="https://calendly.com/hsiang-semiqlassical/new-meeting-1" target="_blank" rel="noopener noreferrer">Book an appointment</a>
               <span class="sepc">::</span>
               <a href="https://attryx.ai">attryx.ai</a>
             </div>
@@ -116,7 +116,7 @@
 
       <section class="reveal" style="animation-delay:.36s">
         <div class="sec-head">
-          <span class="label">Team <span class="sep-cy">::</span> two scientist-builders, 20+ yrs research</span>
+          <span class="label">Team <span class="sep-vi">::</span> two scientist-builders, 20+ yrs research</span>
           <span class="hair"></span>
         </div>
         <div class="founders">
@@ -144,5 +144,6 @@
       <div class="corp">semiqlassical, inc.</div>
     </footer>
   </div>
+  <script src="/v/chaos-attractor.js?v=20260621-calm-attractor" defer></script>
 </body>
 </html>
